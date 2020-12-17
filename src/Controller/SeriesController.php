@@ -57,21 +57,22 @@ class SeriesController extends AbstractController
     /**
      * @Route("/{id}", name="series_show", methods={"GET"})
      */
-    /*public function show(Series $series): Response
-    {
-        return $this->render('series/show.html.twig', [
-            'series' => $series,
-        ]);
-    }*/
-    /**
-     * @Route("/{id}", name="series_show", methods={"GET"})
-     */
     public function show(Series $series): Response
     {
         return $this->render('series/show.html.twig', [
             'series' => $series,
         ]);
     }
+
+    /**
+     * @Route("/series/poster/{id}", name="poster_show", methods={"GET"})
+     */
+    /*public function show(Series $series): Response
+    {
+        return $this->render('series/show.html.twig', [
+            'series' => $series,
+        ]);
+    }*/
 
     /**
      * @Route("/{id}/edit", name="series_edit", methods={"GET","POST"})
