@@ -20,8 +20,21 @@
                 <td>{{ series.plot }}</td>
             </tr>
             <tr>
+                <th>Seasons/Episodes</th>
+                <td><ul>
+                    {% for season in seasons %}
+                        <li>Season {{ season.number }}</li> <!-- For each season, ... -->
+                        <ul> 
+                        {% for episode in episodes[season.number - 1] %}
+                            <li> Episode {{ episode.number }} : {{ episode.title }} <!-- ... we print episodes about his season -->
+                        {% endfor %}
+                        </ul>
+                    {% endfor %}
+                </ul></td>
+            </tr>
+            <tr>
                 <th>Imdb</th>
-                <td>{{ series.imdb }}</td>
+                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Link</a></td>
             </tr>
             <tr>
                 <th>Poster</th>
@@ -33,7 +46,7 @@
             </tr>
             <tr>
                 <th>YoutubeTrailer</th>
-                <td>{{ series.youtubeTrailer }}</td>
+                <td><a href="{{ series.youtubeTrailer }}">Link</a></td>
             </tr>
             <tr>
                 <th>Awards</th>

@@ -23,7 +23,14 @@
         {% for series in series %}
             <tr>
                 <td>{{ series.title }}</td>
+                <td>{{ series.plot }}</td>
+                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Link</a></td>
                 <td>{{ series.poster }}</td>
+                <td>{{ series.director }}</td>
+                <td><a href="{{ series.youtubeTrailer }}">Link</a></td>
+                <td>{{ series.awards }}</td>
+                <td>{{ series.yearStart }}</td>
+                <td>{{ series.yearEnd }}</td>
                 <td>
                     <a href="{{ path('series_show', {'id': series.id}) }}">show</a>
                     <a href="{{ path('series_edit', {'id': series.id}) }}">edit</a>
