@@ -41,21 +41,23 @@ class SeriesController extends AbstractController
         $poster = base64_encode(stream_get_contents($stream));
 
         // To get seasons
-        $season = $this->getDoctrine()
-            ->getRepository(Season::class);
-
-        $seasons = $season->findBy(['series' => $series->getId()]); // Get seasons about the serie instance
+        $seasons = $this->getDoctrine()
+            ->getRepository(Season::class)
+            ->findBy(['series' => $series->getId()], ['number' => 'ASC']); // Get seasons about the serie instance
 
         // To get episodes
-        $episodes = $this->getDoctrine()
-            ->getRepository(Episode::class)
-            ->findBy(['season' => $season_id]); // A REVOIR !!
-        
+        for($i = 0; $i < count($seasons); $i++)
+        {
+            $episodes[$i] = $this->getDoctrine()
+                ->getRepository(Episode::class)
+                ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
+        }
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'seasons' => $seasons,
-            'episodes' => $episodes
+            'episodes' => $episodes,
         ]);
     }
 

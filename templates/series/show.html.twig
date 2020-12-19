@@ -23,7 +23,12 @@
                 <th>Seasons/Episodes</th>
                 <td><ul>
                     {% for season in seasons %}
-                        <li>{{ season.number }}</li>
+                        <li>Season {{ season.number }}</li> <!-- For each season, ... -->
+                        <ul> 
+                        {% for episode in episodes[season.id - 1] %}
+                            <li> Episode {{ episode.number }} : {{ episode.title }} <!-- ... we print episodes about his season -->
+                        {% endfor %}
+                        </ul>
                     {% endfor %}
                 </ul></td>
             </tr>

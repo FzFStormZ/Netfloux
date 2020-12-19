@@ -27,10 +27,10 @@
                 <td>{{ series.id }}</td>
                 <td>{{ series.title }}</td>
                 <td>{{ series.plot }}</td>
-                <td>{{ series.imdb }}</td>
+                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Link</a></td>
                 <td>{{ series.poster }}</td>
                 <td>{{ series.director }}</td>
-                <td>{{ series.youtubeTrailer }}</td>
+                <td><a href="{{ series.youtubeTrailer }}">Link</a></td>
                 <td>{{ series.awards }}</td>
                 <td>{{ series.yearStart }}</td>
                 <td>{{ series.yearEnd }}</td>
