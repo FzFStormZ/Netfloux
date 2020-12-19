@@ -25,7 +25,7 @@
                     {% for season in seasons %}
                         <li>Season {{ season.number }}</li> <!-- For each season, ... -->
                         <ul> 
-                        {% for episode in episodes[season.id - 1] %}
+                        {% for episode in episodes[season.number - 1] %}
                             <li> Episode {{ episode.number }} : {{ episode.title }} <!-- ... we print episodes about his season -->
                         {% endfor %}
                         </ul>
