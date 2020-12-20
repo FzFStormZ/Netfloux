@@ -8,12 +8,14 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ series.id }}</td>
-            </tr>
-            <tr>
                 <th>Title</th>
                 <td>{{ series.title }}</td>
+                <td>
+                    {{ form_start(followForm) }}
+                        {{ form_row(followForm.follow) }}
+                        <button type="submit" class="btn">Submit</button>
+                    {{ form_end(followForm) }}
+                </td>
             </tr>
             <tr>
                 <th>Plot</th>

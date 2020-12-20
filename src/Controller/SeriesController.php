@@ -5,8 +5,9 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Entity\Season;
 use App\Entity\Series;
+use App\Entity\User;
+use App\Form\FollowType;
 use App\Form\SeriesType;
-use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +33,7 @@ class SeriesController extends AbstractController
     }   
 
     /**
-     * @Route("/{id}", name="series_show", methods={"GET"})
+     * @Route("/{id}", name="series_show", methods={"GET", "POST"})
      */
     public function show(Series $series): Response
     {
@@ -53,11 +54,40 @@ class SeriesController extends AbstractController
                 ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
         }
 
+        // To print FollowForm
+        $user = $this->getUser();
+        $form = $this->createForm(FollowType::class, $user);
+
+        if ($form->isSubmitted() && $form->isValid()) 
+        {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+            return $this->redirectToRoute('series_my'); // To show his new follow serie
+        }
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'seasons' => $seasons,
             'episodes' => $episodes,
+            'followForm' => $form->createView(),
+        ]);
+    }
+
+    /**
+     * @Route("/myseries", name="series_my", methods={"GET"})
+     */
+    public function myseries(Series $series): Response
+    {
+
+        $user = $this->getUser();
+        $user->addSeries($series);
+
+        return $this->render('series/myseries.html.twig', [
+            'series' => $series,
         ]);
     }
 
@@ -118,6 +148,5 @@ class SeriesController extends AbstractController
 
         return $this->redirectToRoute('series_index');
     }
-
 
 }
