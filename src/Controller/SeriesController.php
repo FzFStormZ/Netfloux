@@ -24,7 +24,7 @@ class SeriesController extends AbstractController
     {
         $series = $this->getDoctrine()
             ->getRepository(Series::class)
-            ->findAll();
+            ->findBy(['id' => 1]);
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
