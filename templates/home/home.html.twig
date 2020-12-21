@@ -1,3 +1,111 @@
-{% extends 'base.html.twig' %}
+<!doctype html>
+<html lang="en">
 
-{% block title %}Welcome to our website project!{% endblock %}
+<head>
+    <meta charset="utf-8">
+    
+    <!--====== Title ======-->
+    <title>Welcome to our website project!</title>
+    
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    
+</head>
+
+<body>
+
+    {% include 'home/navbar.html.twig' %}
+    
+    <!--====== SLIDER PART START ======-->
+
+    <section id="home" class="slider_area">
+        <div id="carouselThree" class="carousel slide" data-ride="carousel">
+
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <div class="slider-content">
+                                    <h1 class="title">Welcome to TurboWeb</h1>
+                                    <p class="text">The website in which you can find quickly any series you want !</p>
+                                </div>
+                            </div>
+                        </div> <!-- row -->
+                    </div> <!-- container -->
+                    <div class="slider-image-box d-none d-lg-flex align-items-end">
+                        <div class="slider-image">
+                            <img src="{{asset('images/slider/1.png')}}" alt="Hero">
+                        </div> <!-- slider-imgae -->
+                    </div> <!-- slider-imgae box -->
+                </div> <!-- carousel-item -->
+        </div>
+    </section>
+
+    <!--====== SLIDER PART ENDS ======-->
+    
+    <!--====== FEATRES TWO PART START ======-->
+
+    <section id="services" class="features-area">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-10">
+                    <div class="section-title text-center pb-10">
+                        <h3 class="title">Our Services</h3>
+                        <p class="text">Stop wasting time and money designing and managing a website that doesn’t get results. Happiness guaranteed!</p>
+                    </div> <!-- row -->
+                </div>
+            </div> <!-- row -->
+            <div class="row justify-content-center">
+                <div class="col-lg-4 col-md-7 col-sm-9">
+                    <div class="single-features mt-40">
+                        <div class="features-title-icon d-flex justify-content-between">
+                            <h4 class="features-title"><a href="#">Graphics Design</a></h4>
+                            <div class="features-icon">
+                                <i class="lni lni-brush"></i>
+                            </div>
+                        </div>
+                        <div class="features-content">
+                            <p class="text">Short description for the ones who look for something new. Short description for the ones who look for something new.</p>
+                            <a class="features-btn" href="#">LEARN MORE</a>
+                        </div>
+                    </div> <!-- single features -->
+                </div>
+                <div class="col-lg-4 col-md-7 col-sm-9">
+                    <div class="single-features mt-40">
+                        <div class="features-title-icon d-flex justify-content-between">
+                            <h4 class="features-title"><a href="#">Website Design</a></h4>
+                            <div class="features-icon">
+                                <i class="lni lni-layout"></i>
+                            </div>
+                        </div>
+                        <div class="features-content">
+                            <p class="text">Short description for the ones who look for something new. Short description for the ones who look for something new.</p>
+                            <a class="features-btn" href="#">LEARN MORE</a>
+                        </div>
+                    </div> <!-- single features -->
+                </div>
+                <div class="col-lg-4 col-md-7 col-sm-9">
+                    <div class="single-features mt-40">
+                        <div class="features-title-icon d-flex justify-content-between">
+                            <h4 class="features-title"><a href="#">Digital Marketing</a></h4>
+                            <div class="features-icon">
+                                <i class="lni lni-bolt"></i>
+                            </div>
+                        </div>
+                        <div class="features-content">
+                            <p class="text">Short description for the ones who look for something new. Short description for the ones who look for something new.</p>
+                            <a class="features-btn" href="#">LEARN MORE</a>
+                        </div>
+                    </div> <!-- single features -->
+                </div>
+            </div> <!-- row -->
+        </div> <!-- container -->
+    </section>
+
+    <!--====== FEATRES TWO PART ENDS ======-->
+    
+</body>
+
+</html>
