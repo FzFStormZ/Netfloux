@@ -5,7 +5,6 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Entity\Season;
 use App\Entity\Series;
-use App\Entity\User;
 use App\Form\FollowType;
 use App\Form\SeriesType;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,7 +24,7 @@ class SeriesController extends AbstractController
     {
         $series = $this->getDoctrine()
             ->getRepository(Series::class)
-            ->findBy(['id' => 1]);
+            ->findAll();
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
@@ -33,9 +32,9 @@ class SeriesController extends AbstractController
     }   
 
     /**
-     * @Route("/{id}", name="series_show", methods={"GET", "POST"})
+     * @Route("/{id}", name="series_show", methods={"GET", "POST"}, requirements={"id":"\d+"})
      */
-    public function show(Series $series): Response
+    public function show(Series $series, Request $request): Response
     {
         // To get the poster
         $stream = $series->getPoster();
@@ -54,19 +53,43 @@ class SeriesController extends AbstractController
                 ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
         }
 
-        // To print FollowForm
         $user = $this->getUser();
+    
+        // To print FollowForm
         $form = $this->createForm(FollowType::class, $user);
+        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) 
+        if ($form->isSubmitted() && $form->isValid() && $user) 
         {
 
             $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($user);
-            $entityManager->flush();
+            $user->addSeries($series);
+            $entityManager->flush($user);
 
             return $this->redirectToRoute('series_my'); // To show his new follow serie
         }
+
+        /*
+        $rating = $this->getDoctrine()
+            ->getRepository(Rating::class)
+            ->findOneBy(['series_id' => $series->getId(), 'user_id' => $user->getId()]);
+
+        if($rating != null)
+        {
+            //To print RatingForm if not rated
+            $form = $this->createForm(RatingType::class, $user);
+            $form->handleRequest($request);
+
+            if ($form->isSubmitted() && $form->isValid() && $user) 
+            {
+                $entityManager = $this->getDoctrine()->getManager();
+                ;
+                $entityManager->flush($user);
+
+                return $this->redirectToRoute('series_my');
+            }
+        }
+        */
 
         return $this->render('series/show.html.twig', [
             'series' => $series,
@@ -76,21 +99,6 @@ class SeriesController extends AbstractController
             'followForm' => $form->createView(),
         ]);
     }
-
-    /**
-     * @Route("/myseries", name="series_my", methods={"GET"})
-     */
-    public function myseries(Series $series): Response
-    {
-
-        $user = $this->getUser();
-        $user->addSeries($series);
-
-        return $this->render('series/myseries.html.twig', [
-            'series' => $series,
-        ]);
-    }
-
 
     /**
      * @Route("/new", name="series_new", methods={"GET","POST"})

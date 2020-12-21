@@ -8,12 +8,12 @@ use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
-class FollowType extends AbstractType
+class UnFollowType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('follow', CheckboxType::class, [
+            ->add('unfollow', CheckboxType::class, [
                 'mapped' => false,
             ])
         ;

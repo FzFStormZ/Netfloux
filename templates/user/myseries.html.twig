@@ -1,0 +1,46 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}My series{% endblock %}
+
+{% block body %}
+    <h1>{{app.user.name}}' series</h1>
+
+    {% set i = 0 %}
+    {% if series != null %}
+        {% for serie in series %}
+        <table class="table">
+            <tbody>
+                <tr>
+                    <th>Title</th>
+                    <td><h2>{{ serie.title }}<h2></td>
+                    <td>
+                        {{ form_start(unFollowForm[i]) }}
+                            {{ form_row(unFollowForm[i].unfollow) }}
+                            <button type="submit" class="btn">Submit</button>
+                        {{ form_end(unFollowForm[i]) }}
+                    </td>
+                </tr>
+                <tr>
+                    <th>Poster</th>
+                    <td><img src='data:image/jpeg;base64,{{ poster[i] }}'/></td>
+                    {% set i = i + 1 %}
+                </tr>
+                <tr>
+                    <th>Imdb</th>
+                    <td><a href="https://www.imdb.com/title/{{ serie.imdb }}">Imdb link</a></td>
+                </tr>
+                <tr>
+                    <th>YoutubeTrailer</th>
+                    <td><a href="{{ serie.youtubeTrailer }}">Youtube link</a></td>
+                </tr>
+            </tbody>
+        </table>
+        <br><hr><br>
+        {% endfor %}
+    {% else %}
+        <p>You can add series on this page : <a href="{{ path('series_index') }}">List</a></p>
+    {% endif %}
+
+    <a href="{{ path('series_index') }}">Back to list</a>
+
+{% endblock %}

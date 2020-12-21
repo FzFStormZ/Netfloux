@@ -10,12 +10,14 @@
             <tr>
                 <th>Title</th>
                 <td>{{ series.title }}</td>
+                {% if app.user %}
                 <td>
                     {{ form_start(followForm) }}
                         {{ form_row(followForm.follow) }}
                         <button type="submit" class="btn">Submit</button>
                     {{ form_end(followForm) }}
                 </td>
+                {% endif %}
             </tr>
             <tr>
                 <th>Plot</th>
@@ -36,7 +38,7 @@
             </tr>
             <tr>
                 <th>Imdb</th>
-                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Link</a></td>
+                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a></td>
             </tr>
             <tr>
                 <th>Poster</th>
@@ -48,7 +50,7 @@
             </tr>
             <tr>
                 <th>YoutubeTrailer</th>
-                <td><a href="{{ series.youtubeTrailer }}">Link</a></td>
+                <td><a href="{{ series.youtubeTrailer }}">Youtube link</a></td>
             </tr>
             <tr>
                 <th>Awards</th>
