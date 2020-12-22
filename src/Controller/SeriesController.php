@@ -26,6 +26,9 @@ class SeriesController extends AbstractController
             ->getRepository(Series::class)
             ->findAll();
 
+        $form = $this->createForm(RegistrationFormType::class, $user);
+        $form->handleRequest($request);
+
         return $this->render('series/index.html.twig', [
             'series' => $series,
         ]);
