@@ -6,7 +6,7 @@
     
     <!--====== NAVBAR TWO PART START ======-->
 
-    <section class="navbar-area">
+    
         <div class="container">
             <div class="row">
                 <div class="col-lg-12">
@@ -27,17 +27,24 @@
                                 <li class="nav-item"><a class="page-scroll" href="{{path('home')}}">Home</a></li>
                                 <li class="nav-item"><a class="page-scroll" href="{{path('series_index')}}">Series</a></li>
                                 <li class="nav-item"><a class="page-scroll" href="{{path('app_about')}}">About</a></li>
+                                {% if app.user %}
+                                <li class="nav-item"><a class="page-scroll" href="{{path('series_my')}}">My Series</a></li>
+                                {% else %}
                                 <li class="nav-item"><a class="page-scroll" href="{{path('app_register')}}">Register</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                         
                         <div class="navbar-btn d-none d-sm-inline-block">
                             <ul>
-                                <li><a class="solid" href="{{ path('app_login') }}">Login</a></li>
+                                {% if app.user %}
+                                    <li class="nav-item"><a class="page-scroll" href="{{path('app_logout')}}">Logout</a></li>
+                                {% else %}
+                                    <li class="nav-item"><a class="page-scroll" href="{{path('app_login')}}">Login</a></li>
+                                {% endif %}
                             </ul>
                         </div>
                     </nav> <!-- navbar -->
                 </div>
             </div> <!-- row -->
         </div> <!-- container -->
-    </section>

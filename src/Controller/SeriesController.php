@@ -32,8 +32,15 @@ class SeriesController extends AbstractController
             ->getRepository(Series::class)
             ->findAll();
 
+        for($i = 0; $i < count($series); $i++)
+        {
+            $stream = $series[$i]->getPoster();
+            $poster[$i] =base64_encode(stream_get_contents($stream));
+        }
+        
         return $this->render('series/index.html.twig', [
             'series' => $series,
+            'poster' => $poster, 
         ]);
     }   
 

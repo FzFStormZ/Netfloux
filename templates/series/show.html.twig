@@ -3,13 +3,23 @@
 {% block title %}Series{% endblock %}
 
 {% block body %}
-    <h1>Series</h1>
+
+    <section class="navbar-area p-3 mb-2 bg-primary text-white">
+        {% include 'home/navbar.html.twig' %}
+    </section>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+    <h1>{{ series.title }}</h1>
 
     <table class="table">
         <tbody>
             <tr>
-                <th>Title</th>
-                <td>{{ series.title }}</td>
                 {% if app.user %}
                     {% if rating == null %}
                         <td>

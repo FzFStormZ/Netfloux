@@ -4,46 +4,46 @@
 
 {% block body %}
 
-    <h1>Series index</h1>
-    <br>
-    {{ form_start(registrationForm) }}
-        {{ form_row(registrationForm.serie) }}
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
-    <br>
+    <section class="navbar-area p-3 mb-2 bg-primary text-white">
+        {% include 'home/navbar.html.twig' %}
+    </section>
 
-    <table class="table">
-        <thead>
-            <tr>
-                <th>Title</th>
-                <th>Poster</th>
-                <th>actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for series in series %}
-            <tr>
-                <td>{{ series.title }}</td>
-                <td>{{ series.plot }}</td>
-                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a></td>
-                <td>{{ series.poster }}</td>
-                <td>{{ series.director }}</td>
-                <td><a href="{{ series.youtubeTrailer }}">Youtube link</a></td>
-                <td>{{ series.awards }}</td>
-                <td>{{ series.yearStart }}</td>
-                <td>{{ series.yearEnd }}</td>
-                <td>
-                    <a href="{{ path('series_show', {'id': series.id}) }}">show</a>
-                    <a href="{{ path('series_edit', {'id': series.id}) }}">edit</a>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="11">no records found</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <section>
+        <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-6 col-md-10">
+                        <div class="section-title text-center pb-10">
+                            <h3 class="title">Series List</h3>
+                        </div> <!-- row -->
+                    </div>
+                </div> <!-- row -->
+                <div class="row justify-content-center">
+                {% set i = 0 %}
+                    {% for series in series %}
+                        <div class="col-lg-4 col-md-7 col-sm-9">
+                            <div class="single-features mt-40">
+                                <div class="features-title-icon ">
+                                    <a href="{{ path('series_show', {'id': series.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                    <div class="d-flex justify-content-center">
+                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': series.id}) }}">{{ series.title }}</a></h4>
+                                    </div>
+                                </div>
+                                <div class="features-content">
+                                    <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': series.id}) }}">EDIT</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% set i = i + 1 %}
+                    {% else %}
+                            <p class="text">No Record Found</p>
+                    {% endfor %}
 
-    <a href="{{ path('series_new') }}">Create new</a>
+        <a href="{{ path('series_new') }}">Create new</a>
+    </section>
 {% endblock %}
