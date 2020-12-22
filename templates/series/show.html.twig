@@ -84,39 +84,41 @@
     {% endfor %}
     </div>
 
-        <div class="row text-center mt-2">	
-            <div class="col-md-6">
-                <h4>Imdb</h4>
-                <a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a>
-                <br><br>
-            </div>
-            <div class="col-md-6">
-                <h4>Director</h4>
-                <p>{{ series.director }}</p>
-                <br><br>
-            </div>
-            <div class="col-md-6">
-                <h4>YoutubeTrailers</h4>
-                <a href="{{ series.youtubeTrailer }}">Youtube link</a>
-                <br><br>
-            </div>	
-            <div class="col-md-6">
-                <h4>Awards</h4>
-                <p>{{ series.awards }}</p>
-                <br><br>
-            </div>
-            <div class="col-md-6">
-                <h4>YearStart</h4>
-                <p>{{ series.yearStart }}</p>
-                <br><br>
-            </div>
-            <div class="col-md-6">
-                <h4>YearEnd</h4>
-                <p>{{ series.yearEnd }}</p>
-                <br><br>
-            </div>
-            
+    <hr>
+
+    <div class="row text-center mt-2">	
+        <div class="col-md-6">
+            <h4>Imdb</h4>
+            <a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a>
+            <br><br>
         </div>
+        <div class="col-md-6">
+            <h4>Director</h4>
+            <p>{{ series.director }}</p>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>YoutubeTrailers</h4>
+            <a href="{{ series.youtubeTrailer }}">Youtube link</a>
+            <br><br>
+        </div>	
+        <div class="col-md-6">
+            <h4>Awards</h4>
+            <p>{{ series.awards }}</p>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>YearStart</h4>
+            <p>{{ series.yearStart }}</p>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>YearEnd</h4>
+            <p>{{ series.yearEnd }}</p>
+            <br><br>
+        </div>
+        
+    </div>
 
     <div class="row justify-content-center">
         <a class="btn btn-outline-secondary" href="{{ path('series_index') }}">Back to List</a>
