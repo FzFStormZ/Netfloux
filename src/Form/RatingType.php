@@ -2,9 +2,14 @@
 
 namespace App\Form;
 
+use App\Entity\User;
+use App\Entity\Rating;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
+use Symfony\Component\Form\Extension\Core\Type\RangeType;
 
 class RatingType extends AbstractType
 {
@@ -13,8 +18,14 @@ class RatingType extends AbstractType
         $builder
             ->add('rating', RangeType::class, [
                 'mapped' => false,
-                'min' => 0,
-                'max' => 10,
+                'attr' => [
+                    'min' => 0,
+                    'max' => 10,
+                ]
+            ])
+            ->add('comment', TextType::class, [
+                'mapped' => false,
+                'required' => false,
             ])
         ;
     }

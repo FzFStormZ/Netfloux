@@ -5,12 +5,18 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Entity\Season;
 use App\Entity\Series;
+use App\Entity\User;
+use App\Entity\Rating;
 use App\Form\FollowType;
 use App\Form\SeriesType;
+use App\Form\RatingType;
+use DateTime;
+use DateTimeZone;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Constraints\Date;
 
 /**
  * @Route("/series")
@@ -36,6 +42,9 @@ class SeriesController extends AbstractController
      */
     public function show(Series $series, Request $request): Response
     {
+        $user = $this->getUser(); // Connected user
+
+
         // To get the poster
         $stream = $series->getPoster();
         $poster = base64_encode(stream_get_contents($stream));
@@ -53,13 +62,12 @@ class SeriesController extends AbstractController
                 ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
         }
 
-        $user = $this->getUser();
-    
-        // To print FollowForm
-        $form = $this->createForm(FollowType::class, $user);
-        $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid() && $user) 
+        // To print FollowForm
+        $followForm = $this->createForm(FollowType::class, $user);
+        $followForm->handleRequest($request);
+
+        if ($followForm->isSubmitted() && $followForm->isValid() && $user) 
         {
 
             $entityManager = $this->getDoctrine()->getManager();
@@ -69,34 +77,67 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('series_my'); // To show his new follow serie
         }
 
-        /*
+
         $rating = $this->getDoctrine()
             ->getRepository(Rating::class)
-            ->findOneBy(['series_id' => $series->getId(), 'user_id' => $user->getId()]);
+            ->findOneBy(['series' => $series, 'user' => $user]);
+        $ratingForm = null;
 
-        if($rating != null)
+        if($rating == null)
         {
-            //To print RatingForm if not rated
-            $form = $this->createForm(RatingType::class, $user);
-            $form->handleRequest($request);
+            $rating = new Rating();
 
-            if ($form->isSubmitted() && $form->isValid() && $user) 
+            //To print RatingForm if not rated
+            $ratingForm = $this->createForm(RatingType::class, $rating);
+            $ratingForm->handleRequest($request);
+
+            if ($ratingForm->isSubmitted() && $ratingForm->isValid() && $user) 
             {
                 $entityManager = $this->getDoctrine()->getManager();
-                ;
-                $entityManager->flush($user);
+                $rating->setSeries($series);
+                $rating->setUser($user);
+                $rating->setValue($ratingForm->get('rating')->getData());
+                
+                date_default_timezone_set('Europe/Paris'); // Not forget this !!
+                $rating->setDate(new DateTime());
 
-                return $this->redirectToRoute('series_my');
+                $comment = $ratingForm->get('comment');
+
+                if ($comment != null) // Comment is optional 
+                {
+                    $rating->setComment($comment->getData());
+                }
+
+                $entityManager->persist($rating);
+                $entityManager->flush($rating);
+
+                $ratingForm = $ratingForm->createView();
+
+                return $this->redirectToRoute('series_show');
             }
         }
-        */
+
+        // To know is this serie is follow or not by the user
+        $series_user = $user->getSeries();
+        $follow = false;
+
+        foreach ($series_user as $serie)
+        {
+            if ($serie->getId() == $series->getId())
+            {
+                $follow = true;
+            }
+        }
 
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'seasons' => $seasons,
             'episodes' => $episodes,
-            'followForm' => $form->createView(),
+            'followForm' => $followForm->createView(),
+            'follow' => $follow,
+            'ratingForm' => $ratingForm,
+            'rating' => $rating
         ]);
     }
 

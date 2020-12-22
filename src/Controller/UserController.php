@@ -27,10 +27,10 @@ class UserController extends AbstractController
         {
             $forms[] = new FormView();
 
+            // To print UnFollowForm for each serie
             for($i = 0; $i < count($series); $i++)
             {
-                // To print UnFollowForm for this serie
-                $form = $this->createForm(UnFollowType::class, $user);
+                $form = $this->get('form.factory')->createNamed('form_' . (string)$i, UnFollowType::class, $user); // A FIX PROBLEM TO PUT IN "ABOUT PAGE". We have to give a name for each form to identified each form !!
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid() && $user) 

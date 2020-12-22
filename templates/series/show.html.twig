@@ -11,12 +11,32 @@
                 <th>Title</th>
                 <td>{{ series.title }}</td>
                 {% if app.user %}
-                <td>
-                    {{ form_start(followForm) }}
-                        {{ form_row(followForm.follow) }}
-                        <button type="submit" class="btn">Submit</button>
-                    {{ form_end(followForm) }}
-                </td>
+                    {% if rating == null %}
+                        <td>
+                            {{ form_start(ratingForm) }}
+                                {{ form_row(ratingForm.rating) }}
+                                {{ form_row(ratingForm.comment) }}
+                                <button type="submit" class="btn">Submit</button>
+                            {{ form_end(ratingForm) }}
+                        </td>
+                    {% else %}
+                        <td>
+                            <h3>Note : {{ rating.value }}/10</h3>
+                            <p>Your comment : {{ rating.comment }}</p>
+                        </td>
+                    {% endif %}
+                    {% if follow == false %}
+                        <td>
+                            {{ form_start(followForm) }}
+                                {{ form_row(followForm.follow) }}
+                                <button type="submit" class="btn">Submit</button>
+                            {{ form_end(followForm) }}
+                        </td>
+                    {% else %}
+                        <td>
+                            <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
+                        </td>
+                    {% endif %}
                 {% endif %}
             </tr>
             <tr>
