@@ -15,91 +15,115 @@
     <br>
     <br>
     
-    <h1>{{ series.title }}</h1>
-
-    <table class="table">
-        <tbody>
-            <tr>
-                {% if app.user %}
-                    {% if rating == null %}
-                        <td>
-                            {{ form_start(ratingForm) }}
-                                {{ form_row(ratingForm.rating) }}
-                                {{ form_row(ratingForm.comment) }}
-                                <button type="submit" class="btn">Submit</button>
-                            {{ form_end(ratingForm) }}
-                        </td>
-                    {% else %}
-                        <td>
-                            <h3>Note : {{ rating.value }}/10</h3>
-                            <p>Your comment : {{ rating.comment }}</p>
-                        </td>
-                    {% endif %}
-                    {% if follow == false %}
-                        <td>
-                            {{ form_start(followForm) }}
-                                {{ form_row(followForm.follow) }}
-                                <button type="submit" class="btn">Submit</button>
-                            {{ form_end(followForm) }}
-                        </td>
-                    {% else %}
-                        <td>
-                            <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
-                        </td>
-                    {% endif %}
+    <div class="jumbotron text-center mt-2">
+        <div class="container">
+            <div class="row">
+            <div class="col-12">
+                <img src='data:image/jpeg;base64,{{ poster }}'/>
+                <h1>{{ series.title }}</h1>
+                <br>
+                <p>{{ series.plot }}</p>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="row text-center mt-2">	
+          <div class="col-md-12">
+            {% if app.user %}
+                {% if rating == null %}
+                        {{ form_start(ratingForm) }}
+                            {{ form_row(ratingForm.rating) }}
+                            {{ form_row(ratingForm.comment) }}
+                            <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                        {{ form_end(ratingForm) }}
+                {% else %}
+                        <h3 class="mt-0 mb-1">Note : {{ rating.value }}/10</h3>
+                        <p>Your comment : {{ rating.comment }}</p>
                 {% endif %}
-            </tr>
-            <tr>
-                <th>Plot</th>
-                <td>{{ series.plot }}</td>
-            </tr>
-            <tr>
-                <th>Seasons/Episodes</th>
-                <td><ul>
-                    {% for season in seasons %}
-                        <li>Season {{ season.number }}</li> <!-- For each season, ... -->
-                        <ul> 
-                        {% for episode in episodes[season.number - 1] %}
-                            <li> Episode {{ episode.number }} : {{ episode.title }} <!-- ... we print episodes about his season -->
-                        {% endfor %}
-                        </ul>
+                {% if follow == false %}
+                        {{ form_start(followForm) }}
+                            {{ form_row(followForm.follow) }}
+                            <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                        {{ form_end(followForm) }}
+                {% else %}
+                        <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
+                {% endif %}
+            {% endif %}
+            <br><br>
+          </div>
+    </div>
+
+    <div class="jumbotron text-center mt-2">
+        <div class="container">
+            <div class="row">
+            <div class="col-12">
+                <h2>Seasons/Episodes</h2>
+                <br>
+            </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-between">
+        {% for season in seasons %}
+        <div class="col-md-auto col-sm-9">
+            <div class="single-features mt-40">
+                <div class="features-title-icon ">
+                    <h3>Season {{ season.number }}</h3>
+                    <br>
+                    <ul>
+                    {% for episode in episodes[season.number - 1] %}
+                        <li>Episode {{ episode.number }} : {{ episode.title }}</li> <!-- ... we print episodes about his season -->
                     {% endfor %}
-                </ul></td>
-            </tr>
-            <tr>
-                <th>Imdb</th>
-                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a></td>
-            </tr>
-            <tr>
-                <th>Poster</th>
-                <td><img src='data:image/jpeg;base64,{{ poster }}'/></td>
-            </tr>
-            <tr>
-                <th>Director</th>
-                <td>{{ series.director }}</td>
-            </tr>
-            <tr>
-                <th>YoutubeTrailer</th>
-                <td><a href="{{ series.youtubeTrailer }}">Youtube link</a></td>
-            </tr>
-            <tr>
-                <th>Awards</th>
-                <td>{{ series.awards }}</td>
-            </tr>
-            <tr>
-                <th>YearStart</th>
-                <td>{{ series.yearStart }}</td>
-            </tr>
-            <tr>
-                <th>YearEnd</th>
-                <td>{{ series.yearEnd }}</td>
-            </tr>
-        </tbody>
-    </table>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
 
-    <a href="{{ path('series_index') }}">back to list</a>
+        <div class="row text-center mt-2">	
+            <div class="col-md-6">
+                <h4>Imdb</h4>
+                <a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a>
+                <br><br>
+            </div>
+            <div class="col-md-6">
+                <h4>Director</h4>
+                <p>{{ series.director }}</p>
+                <br><br>
+            </div>
+            <div class="col-md-6">
+                <h4>YoutubeTrailers</h4>
+                <a href="{{ series.youtubeTrailer }}">Youtube link</a>
+                <br><br>
+            </div>	
+            <div class="col-md-6">
+                <h4>Awards</h4>
+                <p>{{ series.awards }}</p>
+                <br><br>
+            </div>
+            <div class="col-md-6">
+                <h4>YearStart</h4>
+                <p>{{ series.yearStart }}</p>
+                <br><br>
+            </div>
+            <div class="col-md-6">
+                <h4>YearEnd</h4>
+                <p>{{ series.yearEnd }}</p>
+                <br><br>
+            </div>
+            
+        </div>
 
-    <a href="{{ path('series_edit', {'id': series.id}) }}">edit</a>
+    <div class="row justify-content-center">
+        <a class="btn btn-outline-secondary" href="{{ path('series_index') }}">Back to List</a>
+        {{ include('series/_delete_form.html.twig') }}
+        <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': series.id}) }}">Edit</a>
+        
+    </div>
 
-    {{ include('series/_delete_form.html.twig') }}
+    
 {% endblock %}
