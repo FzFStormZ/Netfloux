@@ -8,12 +8,36 @@
     <table class="table">
         <tbody>
             <tr>
-                <th>Id</th>
-                <td>{{ series.id }}</td>
-            </tr>
-            <tr>
                 <th>Title</th>
                 <td>{{ series.title }}</td>
+                {% if app.user %}
+                    {% if rating == null %}
+                        <td>
+                            {{ form_start(ratingForm) }}
+                                {{ form_row(ratingForm.rating) }}
+                                {{ form_row(ratingForm.comment) }}
+                                <button type="submit" class="btn">Submit</button>
+                            {{ form_end(ratingForm) }}
+                        </td>
+                    {% else %}
+                        <td>
+                            <h3>Note : {{ rating.value }}/10</h3>
+                            <p>Your comment : {{ rating.comment }}</p>
+                        </td>
+                    {% endif %}
+                    {% if follow == false %}
+                        <td>
+                            {{ form_start(followForm) }}
+                                {{ form_row(followForm.follow) }}
+                                <button type="submit" class="btn">Submit</button>
+                            {{ form_end(followForm) }}
+                        </td>
+                    {% else %}
+                        <td>
+                            <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
+                        </td>
+                    {% endif %}
+                {% endif %}
             </tr>
             <tr>
                 <th>Plot</th>
@@ -34,7 +58,7 @@
             </tr>
             <tr>
                 <th>Imdb</th>
-                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Link</a></td>
+                <td><a href="https://www.imdb.com/title/{{ series.imdb }}">Imdb link</a></td>
             </tr>
             <tr>
                 <th>Poster</th>
@@ -46,7 +70,7 @@
             </tr>
             <tr>
                 <th>YoutubeTrailer</th>
-                <td><a href="{{ series.youtubeTrailer }}">Link</a></td>
+                <td><a href="{{ series.youtubeTrailer }}">Youtube link</a></td>
             </tr>
             <tr>
                 <th>Awards</th>
