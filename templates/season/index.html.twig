@@ -15,7 +15,7 @@
             <div class="col-12">
                 <h1>{{ series.title }}</h1>
                 <br>
-                <p>Season {{ seasons.number }}</p>
+                <h3>Season {{ seasons.number }}</h3>
             </div>
             </div>
         </div>
@@ -33,21 +33,20 @@
     <div class="row justify-content-center">
     {% set i = 0 %}
         {% for episode in episodes %}
-            <div class="col-lg-4 col-md-7 col-sm-9">
-                <div class="single-features mt-40">
-                    <div class="features-title-icon ">
-                        <div class="d-flex justify-content-center">
-                            <h4 class="features-title"><a href="#">Episode {{ episode.number }}</a></h4>
-                            <p>{{episode.title}}</p>
-                        </div>
+        <div class="col-lg-4 col-md-7 col-sm-9">
+            <div class="single-features mt-40">
+                <div class="features-title-icon text-center">
+                    <div class="d-flex justify-content-center">
+                        <h4 class="features-title"><a href="#">Episode {{ episode.number }}</a></h4>
                     </div>
+                    <p>{{episode.title}}</p>
                 </div>
             </div>
-            {% set i = i + 1 %}
-            {% else %}
-                    <p class="text">No Record Found</p>
-            {% endfor %}
         </div>
+        {% set i = i + 1 %}
+        {% else %}
+            <p class="text">No Record Found</p>
+        {% endfor %}
     </div>
     
 {% endblock %}

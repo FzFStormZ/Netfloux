@@ -92,17 +92,26 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('series_my'); // To show his new follow serie
         }
 
-        $rating = $this->getDoctrine()->getRepository(Rating::class)->createQueryBuilder('r')
-        ->where('r.series = :sid')
-        ->andwhere('r.user = :uid')
-        ->setParameter('sid', $series)
-        ->setParameter('uid', $user)
-        ->getQuery()
-        ->getResult();
 
+        // Variables for rating
+        $ratings = $this->getDoctrine()
+            ->getRepository(Rating::class)
+            ->findAll(); // Get seasons about the serie instance
         $ratingForm = null;
+        $found = false;
 
-        if($rating == null)
+        // Find if we have a rating for this serie and for this user
+        foreach($ratings as $ratingT)
+        {
+            if ($ratingT->getSeries() == $series && $ratingT->getUser() == $user)
+            {
+                $rating = $ratingT;
+                $found = true;
+            }
+        }
+
+        // If we don't found a rating for this serie and for this user, we print a RatingForm
+        if($found == false)
         {
             $rating = new Rating();
 
@@ -135,7 +144,11 @@ class SeriesController extends AbstractController
                 return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
             }
         }
+
+        // Variables for follow/unfollow
         $follow = false;
+
+        // The follow/unfollow button can be visible only for connected user
         if ($user != null)
         {
             // To know is this serie is follow or not by the user
@@ -158,8 +171,9 @@ class SeriesController extends AbstractController
             'episodes' => $episodes,
             'followForm' => $followForm->createView(),
             'follow' => $follow,
-            'ratingForm' => $ratingForm,
-            'rating' => $rating
+            'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
+            'rating' => $rating,
+            'found' => $found
         ]);
     }
 
