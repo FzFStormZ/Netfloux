@@ -92,10 +92,14 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('series_my'); // To show his new follow serie
         }
 
+        $rating = $this->getDoctrine()->getRepository(Rating::class)->createQueryBuilder('r')
+        ->where('r.series = :sid')
+        ->andwhere('r.user = :uid')
+        ->setParameter('sid', $series)
+        ->setParameter('uid', $user)
+        ->getQuery()
+        ->getResult();
 
-        $rating = $this->getDoctrine()
-            ->getRepository(Rating::class)
-            ->findBy(['series' => $series, 'user' => $user]);
         $ratingForm = null;
 
         if($rating == null)
@@ -131,7 +135,7 @@ class SeriesController extends AbstractController
                 return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
             }
         }
-
+        $follow = false;
         if ($user != null)
         {
             // To know is this serie is follow or not by the user

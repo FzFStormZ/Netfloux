@@ -25,34 +25,35 @@
     </div>
     <section>
         <div class="container">
-                <div class="row justify-content-center">
-                    <div class="col-lg-6 col-md-10">
-                        <div class="section-title text-center pb-10">
-                            <h3 class="title">Series List</h3>
-                        </div> <!-- row -->
-                    </div>
-                </div> <!-- row -->
-                <div class="row justify-content-center">
-                {% set i = 0 %}
-                    {% for serie in series %}
-                        <div class="col-lg-4 col-md-7 col-sm-9">
-                            <div class="single-features mt-40">
-                                <div class="features-title-icon ">
-                                    <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
-                                    <div class="d-flex justify-content-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-10">
+                    <div class="section-title text-center pb-10">
+                        <h3 class="title">Series List</h3>
+                    </div> <!-- row -->
+                </div>
+            </div> <!-- row -->
+            <div class="row justify-content-center">
+            {% set i = 0 %}
+                {% for serie in series %}
+                    <div class="col-lg-4 col-md-7 col-sm-9">
+                        <div class="single-features mt-40">
+                            <div class="features-title-icon ">
+                                <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                <div class="d-flex justify-content-center">
                                     <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>
-                                    </div>
-                                </div>
-                                <div class="features-content">
-                                    <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': serie.id}) }}">EDIT</a>
                                 </div>
                             </div>
+                            <div class="features-content">
+                                <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': serie.id}) }}">EDIT</a>
+                            </div>
                         </div>
-                        {% set i = i + 1 %}
-                    {% else %}
-                            <p class="text">No Record Found</p>
-                    {% endfor %}
-
+                    </div>
+                    {% set i = i + 1 %}
+                {% else %}
+                        <p class="text">No Record Found</p>
+                {% endfor %}
+            </div>
+        </div>
         <a href="{{ path('series_new') }}">Create new</a>
     </section>
 {% endblock %}
