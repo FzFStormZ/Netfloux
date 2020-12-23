@@ -87,7 +87,7 @@ class SeriesController extends AbstractController
 
         $rating = $this->getDoctrine()
             ->getRepository(Rating::class)
-            ->findOneBy(['series' => $series, 'user' => $user]);
+            ->findBy(['series' => $series, 'user' => $user]);
         $ratingForm = null;
 
         if($rating == null)
@@ -120,19 +120,22 @@ class SeriesController extends AbstractController
 
                 $ratingForm = $ratingForm->createView();
 
-                return $this->redirectToRoute('series_show');
+                return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
             }
         }
 
-        // To know is this serie is follow or not by the user
-        $series_user = $user->getSeries();
-        $follow = false;
-
-        foreach ($series_user as $serie)
+        if ($user != null)
         {
-            if ($serie->getId() == $series->getId())
+            // To know is this serie is follow or not by the user
+            $series_user = $user->getSeries();
+            $follow = false;
+
+            foreach ($series_user as $serie)
             {
-                $follow = true;
+                if ($serie->getId() == $series->getId())
+                {
+                    $follow = true;
+                }
             }
         }
 

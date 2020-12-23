@@ -25,17 +25,17 @@
                 </div> <!-- row -->
                 <div class="row justify-content-center">
                 {% set i = 0 %}
-                    {% for series in series %}
+                    {% for serie in series %}
                         <div class="col-lg-4 col-md-7 col-sm-9">
                             <div class="single-features mt-40">
                                 <div class="features-title-icon ">
-                                    <a href="{{ path('series_show', {'id': series.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                    <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
                                     <div class="d-flex justify-content-center">
-                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': series.id}) }}">{{ series.title }}</a></h4>
+                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>
                                     </div>
                                 </div>
                                 <div class="features-content">
-                                    <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': series.id}) }}">EDIT</a>
+                                    <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': serie.id}) }}">EDIT</a>
                                 </div>
                             </div>
                         </div>
