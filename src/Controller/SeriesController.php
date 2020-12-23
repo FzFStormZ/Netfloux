@@ -39,7 +39,7 @@ class SeriesController extends AbstractController
             ->setParameter('title', '%'.$title.'%')
             ->getQuery()
             ->getResult();
-
+        $poster = null;
             for($i = 0; $i < count($series); $i++)
             {
                 $stream = $series[$i]->getPoster();
