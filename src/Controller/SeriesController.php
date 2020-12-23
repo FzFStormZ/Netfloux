@@ -28,15 +28,23 @@ class SeriesController extends AbstractController
      */
     public function index(): Response
     {
-        $series = $this->getDoctrine()
-            ->getRepository(Series::class)
-            ->findAll();
-
-        for($i = 0; $i < count($series); $i++)
-        {
-            $stream = $series[$i]->getPoster();
-            $poster[$i] =base64_encode(stream_get_contents($stream));
+        if(isset($_GET['title'])){
+            $title = $_GET['title'];
+        } else {
+            $title = "";
         }
+        
+        $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
+            ->where('s.title LIKE :title')
+            ->setParameter('title', '%'.$title.'%')
+            ->getQuery()
+            ->getResult();
+
+            for($i = 0; $i < count($series); $i++)
+            {
+                $stream = $series[$i]->getPoster();
+                $poster[$i] =base64_encode(stream_get_contents($stream));
+            }
         
         return $this->render('series/index.html.twig', [
             'series' => $series,
