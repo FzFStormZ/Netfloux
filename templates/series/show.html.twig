@@ -31,22 +31,22 @@
           <div class="col-md-12">
             {% if app.user %}
                 {% if found == false %}
-                        {{ form_start(ratingForm) }}
-                            {{ form_row(ratingForm.rating) }}
-                            {{ form_row(ratingForm.comment) }}
-                            <button type="submit" class="btn btn-outline-secondary">Submit</button>
-                        {{ form_end(ratingForm) }}
+                    {{ form_start(ratingForm) }}
+                        {{ form_row(ratingForm.rating) }}
+                        {{ form_row(ratingForm.comment) }}
+                        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                    {{ form_end(ratingForm) }}
                 {% else %}
-                        <h3 class="mt-0 mb-1">Note : {{ rating.value }}/10</h3>
-                        <p>Your comment : {{ rating.comment }}</p>
+                    <h3 class="mt-0 mb-1">Note : {{ rating.value }}/10</h3>
+                    <p>Your comment : {{ rating.comment }}</p>
                 {% endif %}
                 {% if follow == false %}
-                        {{ form_start(followForm) }}
-                            {{ form_row(followForm.follow) }}
-                            <button type="submit" class="btn btn-outline-secondary">Submit</button>
-                        {{ form_end(followForm) }}
+                    {{ form_start(followForm) }}
+                        {{ form_row(followForm.follow) }}
+                        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                    {{ form_end(followForm) }}
                 {% else %}
-                        <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
+                    <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
                 {% endif %}
             {% endif %}
             <br><br>
