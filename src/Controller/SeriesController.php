@@ -107,6 +107,30 @@ class SeriesController extends AbstractController
         if ($trueSeries != null){
             $series = $trueSeries;
         }
+
+        if(isset($_GET['page'])){
+            $page = (int)$_GET['page'];
+        } else {
+            $page = 0;
+        }
+        
+
+        $lenght = 18;
+
+        if ($page < 0){
+            $page = 0;
+        } else if($page*$lenght > count($series)) {
+            $page--;
+        }
+
+        if(count($series) > $page*15+$lenght){
+            $tmp = array_slice($series, ($page*$lenght), $lenght);
+        } else {
+            $tmplenght = $page*15+$lenght - count($series);
+            $tmp = array_slice($series, ($page*$lenght), $tmplenght);
+        }
+
+        $series = $tmp;
         
 
 
@@ -135,6 +159,10 @@ class SeriesController extends AbstractController
             'poster' => $poster,
             'countries' => $countries,
             'genres' => $genres,
+            'currentTitle' => $title,
+            'currentCountry' => $country,
+            'currentGenre' => $genre,
+            'currentPage' => $page,
         ]);
     }   
 
