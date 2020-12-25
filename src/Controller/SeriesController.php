@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Episode;
 use App\Entity\Country;
+use App\Entity\Genre;
 use App\Entity\Season;
 use App\Entity\Series;
 use App\Entity\User;
@@ -29,6 +30,8 @@ class SeriesController extends AbstractController
      */
     public function index(): Response
     {
+
+
         if(isset($_GET['title'])){
             $title = $_GET['title'];
         } else {
@@ -37,21 +40,52 @@ class SeriesController extends AbstractController
 
         $series = null;
 
+                                    // Search by Country
         if(isset($_GET['country'])){
             $country = $_GET['country'];
             if($country != ""){
-            $countryObj= $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
-                ->where('c.name LIKE :name')
-                ->setParameter('name', '%'.$country.'%')
-                ->getQuery()
-                ->getOneOrNullResult();
+                $countryObj= $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
+                    ->where('c.name LIKE :name')
+                    ->setParameter('name', '%'.$country.'%')
+                    ->getQuery()
+                    ->getOneOrNullResult();
 
-            $countrySeries = $countryObj->getSeries();
+                $countrySeries = $countryObj->getSeries();
 
-            $series = $countrySeries;
+                $series = $countrySeries;
             }
         }
 
+        $series2 = array();
+                                    // Search by Genre
+        if(isset($_GET['genre'])){
+            $genre = $_GET['genre'];
+            if($genre != ""){
+                $genreObj= $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g')
+                    ->where('g.name LIKE :name')
+                    ->setParameter('name', '%'.$genre.'%')
+                    ->getQuery()
+                    ->getOneOrNullResult();
+
+                $genreSeries = $genreObj->getSeries();
+                if($series == array()){
+                    $series2 = $genreSeries;
+                } else {
+                    foreach ($series as $serie){
+                            foreach($genreSeries as $genreSerie){
+                                if ($serie->getTitle() == $genreSerie->getTitle()){
+                                array_push($series2, $serie);
+                            }
+                        }          
+                    }
+                }
+            }
+        }
+
+        if($series2 != null){
+            $series = $series2;
+        }
+                                //Search by Title
         $trueSeries = array();
         if ($series == null){
             $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
@@ -90,11 +124,17 @@ class SeriesController extends AbstractController
         $countries = $this->getDoctrine()
         ->getRepository(Country::class)
         ->findAll();
+
+        // To get Genres
+        $genres = $this->getDoctrine()
+        ->getRepository(Genre::class)
+        ->findAll();
         
         return $this->render('series/index.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'countries' => $countries,
+            'genres' => $genres,
         ]);
     }   
 
