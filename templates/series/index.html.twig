@@ -16,19 +16,30 @@
     <div class="jumbotron text-center mt-2">
         <div class="container">
             <form method="GET">
-                Search by name : <input type="text" name="title"><br><br>
+                Search by name : <input type="text" name="title">
+                <br><br>
                 Search by Country : <select name="country">
                 <option value="">--Please choose an option--</option>
                 {% for country in countries %}
-                <option value="{{country.name}}">{{country.name}}</option>
+                    {% if country.name == currentCountry %}
+                        <option value="{{country.name}}" selected>{{country.name}}</option>
+                    {% else %}
+                        <option value="{{country.name}}">{{country.name}}</option>
+                    {% endif %}
                 {% endfor %}
-                </select><br><br>
-                Search by Genre : <select name="genre">
+                </select>
+                <br><br>
+                Search by Genre : <select name="genre" value="{{currentGenre}}">
                 <option value="">--Please choose an option--</option>
                 {% for genre in genres %}
-                <option value="{{genre.name}}">{{genre.name}}</option>
+                    {% if genre.name == currentGenre %}
+                        <option value="{{genre.name}}" selected>{{genre.name}}</option>
+                    {% else %}
+                        <option value="{{genre.name}}">{{genre.name}}</option>
+                    {% endif %}
                 {% endfor %}
-                </select><br><br>
+                </select>
+                <br><br>
                 <button type="submit" class="btn btn-outline-secondary">Submit</button>
                 <br><br>
                 <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
