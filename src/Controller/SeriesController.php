@@ -54,6 +54,8 @@ class SeriesController extends AbstractController
 
                 $series = $countrySeries;
             }
+        } else {
+            $country = "";
         }
 
         $series2 = array();
@@ -80,6 +82,8 @@ class SeriesController extends AbstractController
                     }
                 }
             }
+        } else {
+            $genre = "";
         }
 
         if($series2 != null){
