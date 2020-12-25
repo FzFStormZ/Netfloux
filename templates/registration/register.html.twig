@@ -3,12 +3,15 @@
 {% block title %}Register{% endblock %}
 
 {% block body %}
+    <section class="navbar-area p-3 mb-2 bg-primary text-white">
+        {% include 'home/navbar.html.twig' %}
+    </section>
     {% for flashError in app.flashes('verify_email_error') %}
         <div class="alert alert-danger" role="alert">{{ flashError }}</div>
     {% endfor %}
-
-    <h1>Register</h1>
-
+<br><br><br><br><br><br>
+<div class="text-center">
+    <h1>Registration</h1><br>
     {{ form_start(registrationForm) }}
         {{ form_row(registrationForm.name) }}
         {{ form_row(registrationForm.email) }}
@@ -18,7 +21,8 @@
         {{ form_row(registrationForm.agreeTerms) }}
 
         {{ form_row(registrationForm.captcha) }}
-
-        <button type="submit" class="btn">Register</button>
+        <br>
+        <button type="submit" class="btn btn-outline-primary">Register</button>
     {{ form_end(registrationForm) }}
+</div>
 {% endblock %}
