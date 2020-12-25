@@ -13,45 +13,47 @@
     <br>
     <br>
     <br>
-    <br>
-    <h1>{{app.user.name}}' series</h1>
 
-    {% set i = 0 %}
-    {% if series != null %}
-        {% for serie in series %}
-        <table class="table">
-            <tbody>
-                <tr>
-                    <th>Title</th>
-                    <td><h2>{{ serie.title }}<h2></td>
-                    <td>
-                        {{ form_start(unFollowForm[i]) }}
-                            {{ form_row(unFollowForm[i].unfollow) }}
-                            <button type="submit" class="btn">Submit</button>
-                        {{ form_end(unFollowForm[i]) }}
-                    </td>
-                </tr>
-                <tr>
-                    <th>Poster</th>
-                    <td><img src='data:image/jpeg;base64,{{ poster[i] }}'/></td>
-                    {% set i = i + 1 %}
-                </tr>
-                <tr>
-                    <th>Imdb</th>
-                    <td><a href="https://www.imdb.com/title/{{ serie.imdb }}">Imdb link</a></td>
-                </tr>
-                <tr>
-                    <th>YoutubeTrailer</th>
-                    <td><a href="{{ serie.youtubeTrailer }}">Youtube link</a></td>
-                </tr>
-            </tbody>
-        </table>
-        <br><hr><br>
-        {% endfor %}
-    {% else %}
-        <p>You can add series on this page : <a href="{{ path('series_index') }}">List</a></p>
-    {% endif %}
-
-    <a href="{{ path('series_index') }}">Back to list</a>
+    <section>
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-6 col-md-10">
+                    <div class="section-title text-center pb-10">
+                        <h3 class="title">{{app.user.name}}' series</h3>
+                    </div> <!-- row -->
+                </div>
+            </div> <!-- row -->
+            <div class="row justify-content-center">
+                {% set i = 0 %}
+                {% if series != null %}
+                    {% for serie in series %}
+                        <div class="col-lg-4 col-md-7 col-sm-9">
+                            <div class="single-features mt-40">
+                                <div class="features-title-icon ">
+                                    <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                    <div class="d-flex justify-content-center">
+                                        <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>
+                                    </div>
+                                </div>
+                                <div class="features-content">
+                                    {{ form_start(unFollowForm[i]) }}
+                                        {{ form_row(unFollowForm[i].unfollow) }}
+                                        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                                    {{ form_end(unFollowForm[i]) }}
+                                    <a class="btn btn-outline-secondary" href="https://www.imdb.com/title/{{ serie.imdb }}">Imdb link</a>
+                                    <a class="btn btn-outline-secondary" href="{{ serie.youtubeTrailer }}">Youtube</a>
+                                </div>
+                            </div>
+                        </div>
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                {% else %}       
+                    <br><p>You can add series on this page : <a href="{{ path('series_index') }}" class="btn btn-outline-secondary">List</a></p><br>
+            {% endif %}
+            
+            </div>
+            <br><a href="{{ path('series_index') }}" class="btn btn-outline-secondary">Back to list</a><br>
+        </div>
+    </section>
 
 {% endblock %}
