@@ -42,9 +42,13 @@
                 <br><br>
                 <button type="submit" class="btn btn-outline-secondary">Submit</button>
                 <br><br>
+                {% if currentPage > 1 %}
                 <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
+                {% endif %}
                 Page : {{currentPage}}
+                {% if currentPage < maxPage %}
                 <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
+                {% endif %}
         </div>
     </div>
 
@@ -81,9 +85,13 @@
         </div>
         <div class="jumbotron text-center mt-2">
             <div class="container">
+                {% if currentPage > 1 %}
                 <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
+                {% endif %}
                 Page : {{currentPage}}
+                {% if currentPage < maxPage %}
                 <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
+                {% endif %}
                 <br><br>
                 <a href="{{ path('series_new') }}" class="btn btn-secondary">Create new</a>
             </div>
