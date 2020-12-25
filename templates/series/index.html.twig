@@ -12,17 +12,23 @@
     <br>
     <br>
     <br>
+
     <div class="jumbotron text-center mt-2">
         <div class="container">
             <div class="row">
-            <div class="col-12">
             </div>
             <form method="GET">
-                Search by name : <input type="text" name="title">
+                Search by name : <input type="text" name="title"><br><br>
+                Search by Country : <select name="country">
+                <option value="">--Please choose an option--</option>
+                {% for country in countries %}
+                <option value="{{country.name}}">{{country.name}}</option>
+                {% endfor %}
+                </select><br><br>
                 <button type="submit" class="btn btn-outline-secondary">Submit</button>
-            </div>
         </div>
     </div>
+
     <section>
         <div class="container">
             <div class="row justify-content-center">

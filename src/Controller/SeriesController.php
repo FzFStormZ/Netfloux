@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\Episode;
+use App\Entity\Country;
 use App\Entity\Season;
 use App\Entity\Series;
 use App\Entity\User;
@@ -33,22 +34,67 @@ class SeriesController extends AbstractController
         } else {
             $title = "";
         }
+
+        $series = null;
+
+        if(isset($_GET['country'])){
+            $country = $_GET['country'];
+            if($country != ""){
+            $countryObj= $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
+                ->where('c.name LIKE :name')
+                ->setParameter('name', '%'.$country.'%')
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            $countrySeries = $countryObj->getSeries();
+
+            $series = $countrySeries;
+            }
+        }
+
+        $trueSeries = array();
+        if ($series == null){
+            $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
+                ->where('s.title LIKE :title')
+                ->setParameter('title', '%'.$title.'%')
+                ->getQuery()
+                ->getResult();
+        } else {
+            foreach ($series as $serie){
+                if (str_contains(strtolower($serie->getTitle()), strtolower($title))){
+                    array_push($trueSeries, $serie);
+                }
+            }
+            if ($trueSeries == array()){
+                $series = array();
+            }
+        }
+
+        if ($trueSeries != null){
+            $series = $trueSeries;
+        }
         
-        $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
-            ->where('s.title LIKE :title')
-            ->setParameter('title', '%'.$title.'%')
-            ->getQuery()
-            ->getResult();
+
+
+        
+        
+
         $poster = null;
             for($i = 0; $i < count($series); $i++)
             {
                 $stream = $series[$i]->getPoster();
                 $poster[$i] =base64_encode(stream_get_contents($stream));
             }
+
+        // To get Countries
+        $countries = $this->getDoctrine()
+        ->getRepository(Country::class)
+        ->findAll();
         
         return $this->render('series/index.html.twig', [
             'series' => $series,
-            'poster' => $poster, 
+            'poster' => $poster,
+            'countries' => $countries,
         ]);
     }   
 
@@ -173,7 +219,8 @@ class SeriesController extends AbstractController
             'follow' => $follow,
             'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
             'rating' => $rating,
-            'found' => $found
+            'found' => $found,
+            
         ]);
     }
 
