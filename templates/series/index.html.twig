@@ -40,14 +40,29 @@
                 {% endfor %}
                 </select>
                 <br><br>
+                Rating Sort : <select name="sort" value="{{currentSort}}">
+                <option value="">--Please choose an option--</option>
+                {% if "Ascending" == currentSort %}
+                    <option value="Ascending" selected>Ascending</option>
+                {% else %}
+                    <option value="Ascending">Ascending</option>
+                {% endif %}
+
+                {% if "Descending" == currentSort %}
+                    <option value="Descending" selected>Descending</option>
+                {% else %}
+                    <option value="Descending">Descending</option>
+                {% endif %}
+                </select>
+                <br><br>
                 <button type="submit" class="btn btn-outline-secondary">Submit</button>
                 <br><br>
                 {% if currentPage > 1 %}
-                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
+                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&sort={{currentSort}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
                 {% endif %}
                 Page : {{currentPage}}
                 {% if currentPage < maxPage %}
-                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
+                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&sort={{currentSort}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
                 {% endif %}
         </div>
     </div>
@@ -66,11 +81,16 @@
                 {% for serie in series %}
                     <div class="col-lg-4 col-md-7 col-sm-9">
                         <div class="single-features mt-40">
-                            <div class="features-title-icon ">
+                            <div class="features-title-icon text-center ">
                                 <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
                                 <div class="d-flex justify-content-center">
-                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>
+                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>                                        
                                 </div>
+                                {% for key in tabRating|keys %}
+                                    {% if key == serie.id %}
+                                        <h5 class="features-title">{{ tabRating[key] }}/10</h5>
+                                    {% endif %}
+                                {% endfor %}
                             </div>
                             <div class="features-content">
                                 <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': serie.id}) }}">EDIT</a>
@@ -86,11 +106,11 @@
         <div class="jumbotron text-center mt-2">
             <div class="container">
                 {% if currentPage > 1 %}
-                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
+                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&sort={{currentSort}}&page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
                 {% endif %}
                 Page : {{currentPage}}
                 {% if currentPage < maxPage %}
-                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
+                <a href="/series/?title={{currentTitle}}&country={{currentCountry}}&genre={{currentGenre}}&sort={{currentSort}}&page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
                 {% endif %}
                 <br><br>
                 <a href="{{ path('series_new') }}" class="btn btn-secondary">Create new</a>
