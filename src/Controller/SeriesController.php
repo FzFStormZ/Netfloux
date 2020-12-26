@@ -112,6 +112,55 @@ class SeriesController extends AbstractController
             $series = $trueSeries;
         }
 
+
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "";
+        }
+
+        $seriesId = array();
+        $tabRating = array();
+
+        foreach ($series as $serie){
+            $ratings = $this->getDoctrine()
+                ->getRepository(Rating::class)
+                ->findBy(['series' => $serie]);
+
+            $avg = 0;
+            
+            if(count($ratings) > 0){
+                foreach ($ratings as $rating){
+                    $avg += $rating->getValue();
+                }
+                $avg /= count($ratings);
+            }
+            $tabRating[$serie->getId()] = $avg;
+            $seriesId[$serie->getId()] = $serie;
+        }
+
+        if ($sort == "Descending"){
+            arsort($tabRating);
+            $i = 0;
+            $series = array();
+            $keys = array_keys($tabRating);
+            foreach ($tabRating as $rating) {
+                $series[$i] = $seriesId[$keys[$i]];
+                $i++;
+            }
+        } else if ($sort == "Ascending"){
+            asort($tabRating);
+            $i = 0;
+            $series = array();
+            $keys = array_keys($tabRating);
+            foreach ($tabRating as $rating) {
+                $series[$i] = $seriesId[$keys[$i]];
+                $i++;
+            }
+        }
+
+
+
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
         } else {
@@ -139,14 +188,17 @@ class SeriesController extends AbstractController
         $series = $tmp;
 
 
+        
+
+        
+        
 
 
+        $poster = array();
 
-
-        $poster = null;
-        for ($i = 0; $i < count($series); $i++) {
-            $stream = $series[$i]->getPoster();
-            $poster[$i] = base64_encode(stream_get_contents($stream));
+        foreach($series as $serie){
+            $stream = $serie->getPoster();
+            array_push($poster, base64_encode(stream_get_contents($stream)));
         }
 
         // To get Countries
@@ -168,7 +220,9 @@ class SeriesController extends AbstractController
             'currentCountry' => $country,
             'currentGenre' => $genre,
             'currentPage' => $page,
+            'currentSort' => $sort,
             'maxPage' => $maxPage,
+            'tabRating' => $tabRating,
         ]);
     }
 
@@ -275,6 +329,9 @@ class SeriesController extends AbstractController
             }
         }
 
+        $trailer = $series->getYoutubeTrailer();
+        $trailer = str_replace("watch?v=", "embed/", $trailer);
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
@@ -285,6 +342,7 @@ class SeriesController extends AbstractController
             'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
             'rating' => $rating,
             'found' => $found,
+            'trailer' => $trailer,
 
         ]);
     }
