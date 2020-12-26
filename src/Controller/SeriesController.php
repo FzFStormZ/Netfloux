@@ -139,6 +139,16 @@ class SeriesController extends AbstractController
         $series = $tmp;
 
 
+        if (isset($_GET['sort'])) {
+            $sort = $_GET['sort'];
+        } else {
+            $sort = "";
+        }
+
+        if ($sort == "A"){
+            
+        }
+
 
 
 
@@ -275,6 +285,9 @@ class SeriesController extends AbstractController
             }
         }
 
+        $trailer = $series->getYoutubeTrailer();
+        $trailer = str_replace("watch?v=", "embed/", $trailer);
+
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
@@ -285,6 +298,7 @@ class SeriesController extends AbstractController
             'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
             'rating' => $rating,
             'found' => $found,
+            'trailer' => $trailer,
 
         ]);
     }
