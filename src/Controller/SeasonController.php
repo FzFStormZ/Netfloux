@@ -23,7 +23,6 @@ class SeasonController extends AbstractController
         // Variables
         $user = $this->getUser(); // Connected user (user = null is not)
         $episodes_not_watched = array();
-        $episodes_watched = array($user->getEpisode());
         $forms = array();
 
         // To get episodes
@@ -31,32 +30,30 @@ class SeasonController extends AbstractController
             ->getRepository(Episode::class)
             ->findBy(['season' => $seasons_id], ['number' => 'ASC']); // Get episodes about each season of the serie
 
-        if ($user != null)
-        {
-            if ($user->getEpisode() == null)
-            {
-                $episodes_not_watched = $episodes;
-            } else {
-                // To get not seen episode
-                foreach ($episodes as $episode) // PROBLEME ICI !!
+        if ($user != null) {
+            $episodes_not_watched = $episodes; // Add all episodes
+
+            if (!($user->getEpisode()->isEmpty())) {
+                // To delete watched an episode        
+                foreach ($user->getEpisode() as $ep)
                 {
-                    if (in_array($episode, $episodes_watched, true))
+                    foreach ($episodes as $episode)
                     {
-                        $episodes_not_watched[$episode->getId()] = $episode;
+                        if ($episode->getId() == $ep->getId()) {
+                            $episodes_not_watched = $this->array_remove($episode, $episodes_not_watched); // Remove episode already watched
+                            break;
+                        }
                     }
                 }
             }
-                
 
             if (count($episodes_not_watched) != 0) // If the user hasn't seen already all episodes
             {
-                foreach($episodes_not_watched as $ep)
-                {
+                foreach ($episodes_not_watched as $ep) {
                     $form = $this->get('form.factory')->createNamed('form_' . (string)$ep->getId(), WatchedType::class, $user);
                     $form->handleRequest($request);
 
-                    if ($form->isSubmitted() && $form->isValid() && $user) 
-                    {
+                    if ($form->isSubmitted() && $form->isValid() && $user) {
                         $entityManager = $this->getDoctrine()->getManager();
                         $user->addEpisode($ep);
                         $entityManager->persist($user);
@@ -78,4 +75,11 @@ class SeasonController extends AbstractController
             'notWatchedForms' => $forms,
         ]);
     }
+
+    // Used to episodes watched/not watched
+    function array_remove($element, $array) {
+        $index = array_search($element, $array);
+        array_splice($array, $index, 1);
+        return $array;
+      }
 }

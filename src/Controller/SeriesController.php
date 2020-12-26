@@ -32,7 +32,7 @@ class SeriesController extends AbstractController
     {
 
 
-        if(isset($_GET['title'])){
+        if (isset($_GET['title'])) {
             $title = $_GET['title'];
         } else {
             $title = "";
@@ -40,13 +40,13 @@ class SeriesController extends AbstractController
 
         $series = null;
 
-                                    // Search by Country
-        if(isset($_GET['country'])){
+        // Search by Country
+        if (isset($_GET['country'])) {
             $country = $_GET['country'];
-            if($country != ""){
-                $countryObj= $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
+            if ($country != "") {
+                $countryObj = $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
                     ->where('c.name LIKE :name')
-                    ->setParameter('name', '%'.$country.'%')
+                    ->setParameter('name', '%' . $country . '%')
                     ->getQuery()
                     ->getOneOrNullResult();
 
@@ -59,26 +59,26 @@ class SeriesController extends AbstractController
         }
 
         $series2 = array();
-                                    // Search by Genre
-        if(isset($_GET['genre'])){
+        // Search by Genre
+        if (isset($_GET['genre'])) {
             $genre = $_GET['genre'];
-            if($genre != ""){
-                $genreObj= $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g')
+            if ($genre != "") {
+                $genreObj = $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g')
                     ->where('g.name LIKE :name')
-                    ->setParameter('name', '%'.$genre.'%')
+                    ->setParameter('name', '%' . $genre . '%')
                     ->getQuery()
                     ->getOneOrNullResult();
 
                 $genreSeries = $genreObj->getSeries();
-                if($series == array()){
+                if ($series == array()) {
                     $series2 = $genreSeries;
                 } else {
-                    foreach ($series as $serie){
-                            foreach($genreSeries as $genreSerie){
-                                if ($serie->getTitle() == $genreSerie->getTitle()){
+                    foreach ($series as $serie) {
+                        foreach ($genreSeries as $genreSerie) {
+                            if ($serie->getTitle() == $genreSerie->getTitle()) {
                                 array_push($series2, $serie);
                             }
-                        }          
+                        }
                     }
                 }
             }
@@ -86,78 +86,77 @@ class SeriesController extends AbstractController
             $genre = "";
         }
 
-        if($series2 != null){
+        if ($series2 != null) {
             $series = $series2;
         }
-                                //Search by Title
+        //Search by Title
         $trueSeries = array();
-        if ($series == null){
+        if ($series == null) {
             $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
                 ->where('s.title LIKE :title')
-                ->setParameter('title', '%'.$title.'%')
+                ->setParameter('title', '%' . $title . '%')
                 ->getQuery()
                 ->getResult();
         } else {
-            foreach ($series as $serie){
-                if (str_contains(strtolower($serie->getTitle()), strtolower($title))){
+            foreach ($series as $serie) {
+                if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
                     array_push($trueSeries, $serie);
                 }
             }
-            if ($trueSeries == array()){
+            if ($trueSeries == array()) {
                 $series = array();
             }
         }
 
-        if ($trueSeries != null){
+        if ($trueSeries != null) {
             $series = $trueSeries;
         }
 
-        if(isset($_GET['page'])){
+        if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
         } else {
             $page = 0;
         }
-        
+
 
         $lenght = 18;
 
-        if ($page < 0){
+        if ($page < 0) {
             $page = 0;
-        } else if($page*$lenght > count($series)) {
+        } else if ($page * $lenght > count($series)) {
             $page--;
         }
 
-        if(count($series) > $page*15+$lenght){
-            $tmp = array_slice($series, ($page*$lenght), $lenght);
+        if (count($series) > $page * 15 + $lenght) {
+            $tmp = array_slice($series, ($page * $lenght), $lenght);
         } else {
-            $tmplenght = $page*15+$lenght - count($series);
-            $tmp = array_slice($series, ($page*$lenght), $tmplenght);
+            $tmplenght = $page * 15 + $lenght - count($series);
+            $tmp = array_slice($series, ($page * $lenght), $tmplenght);
         }
 
         $series = $tmp;
-        
 
 
-        
-        
+
+
+
 
         $poster = null;
-            for($i = 0; $i < count($series); $i++)
-            {
-                $stream = $series[$i]->getPoster();
-                $poster[$i] =base64_encode(stream_get_contents($stream));
-            }
+        for ($i = 0; $i < count($series); $i++) {
+            $stream = $series[$i]->getPoster();
+            $poster[$i] = base64_encode(stream_get_contents($stream));
+        }
 
         // To get Countries
         $countries = $this->getDoctrine()
-        ->getRepository(Country::class)
-        ->findAll();
+            ->getRepository(Country::class)
+            ->findAll();
 
         // To get Genres
         $genres = $this->getDoctrine()
-        ->getRepository(Genre::class)
-        ->findAll();
-        
+            ->getRepository(Genre::class)
+            ->findAll();
+
         return $this->render('series/index.html.twig', [
             'series' => $series,
             'poster' => $poster,
@@ -168,7 +167,7 @@ class SeriesController extends AbstractController
             'currentGenre' => $genre,
             'currentPage' => $page,
         ]);
-    }   
+    }
 
     /**
      * @Route("/{id}", name="series_show", methods={"GET", "POST"}, requirements={"id":"\d+"})
@@ -188,8 +187,7 @@ class SeriesController extends AbstractController
             ->findBy(['series' => $series->getId()], ['number' => 'ASC']); // Get seasons about the serie instance
 
         // To get episodes
-        for($i = 0; $i < count($seasons); $i++)
-        {
+        for ($i = 0; $i < count($seasons); $i++) {
             $episodes[$i] = $this->getDoctrine()
                 ->getRepository(Episode::class)
                 ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
@@ -200,8 +198,7 @@ class SeriesController extends AbstractController
         $followForm = $this->createForm(FollowType::class, $user);
         $followForm->handleRequest($request);
 
-        if ($followForm->isSubmitted() && $followForm->isValid() && $user) 
-        {
+        if ($followForm->isSubmitted() && $followForm->isValid() && $user) {
 
             $entityManager = $this->getDoctrine()->getManager();
             $user->addSeries($series);
@@ -219,31 +216,27 @@ class SeriesController extends AbstractController
         $found = false;
 
         // Find if we have a rating for this serie and for this user
-        foreach($ratings as $ratingT)
-        {
-            if ($ratingT->getSeries() == $series && $ratingT->getUser() == $user)
-            {
+        foreach ($ratings as $ratingT) {
+            if ($ratingT->getSeries() == $series && $ratingT->getUser() == $user) {
                 $rating = $ratingT;
                 $found = true;
             }
         }
 
         // If we don't found a rating for this serie and for this user, we print a RatingForm
-        if($found == false)
-        {
+        if ($found == false) {
             $rating = new Rating();
 
             //To print RatingForm if not rated
             $ratingForm = $this->createForm(RatingType::class, $rating);
             $ratingForm->handleRequest($request);
 
-            if ($ratingForm->isSubmitted() && $ratingForm->isValid() && $user) 
-            {
+            if ($ratingForm->isSubmitted() && $ratingForm->isValid() && $user) {
                 $entityManager = $this->getDoctrine()->getManager();
                 $rating->setSeries($series);
                 $rating->setUser($user);
                 $rating->setValue($ratingForm->get('rating')->getData());
-                
+
                 date_default_timezone_set('Europe/Paris'); // Not forget this !!
                 $rating->setDate(new DateTime());
 
@@ -267,16 +260,13 @@ class SeriesController extends AbstractController
         $follow = false;
 
         // The follow/unfollow button can be visible only for connected user
-        if ($user != null)
-        {
+        if ($user != null) {
             // To know is this serie is follow or not by the user
             $series_user = $user->getSeries();
             $follow = false;
 
-            foreach ($series_user as $serie)
-            {
-                if ($serie->getId() == $series->getId())
-                {
+            foreach ($series_user as $serie) {
+                if ($serie->getId() == $series->getId()) {
                     $follow = true;
                 }
             }
@@ -292,7 +282,7 @@ class SeriesController extends AbstractController
             'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
             'rating' => $rating,
             'found' => $found,
-            
+
         ]);
     }
 
@@ -344,7 +334,7 @@ class SeriesController extends AbstractController
      */
     public function delete(Request $request, Series $series): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$series->getId(), $request->request->get('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $series->getId(), $request->request->get('_token'))) {
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->remove($series);
             $entityManager->flush();
@@ -352,5 +342,4 @@ class SeriesController extends AbstractController
 
         return $this->redirectToRoute('series_index');
     }
-
 }
