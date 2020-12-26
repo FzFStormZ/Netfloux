@@ -266,7 +266,18 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return ['ROLE_USER'];
+        return $this->admin == '1' ? ['ROLE_ADMIN'] : ['ROLE_USER'];
+    }
+
+    public function setRoles(array $role)
+    {
+        if ($role == ['ROLE_ADMIN'])
+        {
+            $this->admin = '1';
+        } else
+        {
+            $this->admin = '0';
+        }
     }
 
     public function eraseCredentials()

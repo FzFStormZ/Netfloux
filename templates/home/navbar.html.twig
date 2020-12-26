@@ -33,6 +33,9 @@
                                 {% else %}
                                 <li class="nav-item"><a class="page-scroll" href="{{path('app_register')}}">Register</a></li>
                                 {% endif %}
+                                {% if is_granted('ROLE_ADMIN') %}
+                                <li class="nav-item"><a class="page-scroll" href="{{path('admin_panel')}}">Admin panel</a></li>
+                                {% endif %}
                                 <li class="nav-item"><a class="page-scroll" href="{{path('app_about')}}">About</a></li>
                                 
                             </ul>

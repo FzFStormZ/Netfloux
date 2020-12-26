@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Panel admin{% endblock %}
+
+{% block body %}
+
+    <section class="navbar-area p-3 mb-2 bg-primary text-white">
+        {% include 'home/navbar.html.twig' %}
+    </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="jumbotron text-center" >    
+        <div class="container">
+            <h1>Comments moderation</h1>
+            <br>
+            <br>
+            <br>
+            <br>
+            <table>
+                <thead class="bg-primary text-white">
+                    <tr>
+                        <th width="300px">Serie</th>
+                        <th width="200px">User</th>
+                        <th width="100px">Value</th>
+                        <th width="300px">Comment</th>
+                        <th width="300px">Date</th>
+                        <th width="200px">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% set i = 0 %}
+                {% for rating in ratings %}
+                    <tr height="50px">
+                        <th>{{rating.series.title}}</th>
+                        <td>{{rating.user.name}}</td>
+                        <td>{{rating.value}}/10</td>
+                        <td>{{rating.comment}}</td>
+                        <td>{{rating.date|date('Y-m-d H:i:s')}}</td>
+                        {% if rating.comment != "" %}
+                            <td>
+                                {{ form_start(commentsForm[i]) }}
+                                    <button type="submit" class="btn btn-outline-secondary">Delete</button>
+                                {{ form_end(commentsForm[i]) }}
+                            </td>
+                        {% else %}
+                            <td>No comment</td>
+                        {% endif %}
+                        {% set i = i + 1 %}
+                    </tr>
+                {% endfor %}   
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}
