@@ -36,7 +36,7 @@
             <div class="single-features mt-40">
                 <div class="features-title-icon text-center">
                     <div class="d-flex justify-content-center">
-                        <h4 class="features-title"><a href="#">Episode {{ episode.number }}</a></h4>
+                        <h4 class="features-title"><a href="{{ path('episode_show', {'serie_id': series.id, 'season_id': seasons.id, 'ep_id': episode.id}) }}">Episode {{ episode.number }}</a></h4>
                     </div>
                     <p>{{episode.title}}</p>
                     {% if app.user %}

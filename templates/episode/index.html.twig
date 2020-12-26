@@ -1,20 +1,54 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello EpisodeController!{% endblock %}
+{% block title %}Series{% endblock %}
+
 
 {% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+    <section class="navbar-area p-3 mb-2 bg-primary text-white">
+        {% include 'home/navbar.html.twig' %}
+    </section>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code><a href="{{ 'C:/Users/Dylan/Desktop/Projet WEB/projet-web/src/Controller/EpisodeController.php'|file_link(0) }}">src/Controller/EpisodeController.php</a></code></li>
-        <li>Your template at <code><a href="{{ 'C:/Users/Dylan/Desktop/Projet WEB/projet-web/templates/episode/index.html.twig'|file_link(0) }}">templates/episode/index.html.twig</a></code></li>
-    </ul>
-</div>
+    <br>
+    <br>
+    <br>
+    <br>
+    
+    <div class="jumbotron text-center mt-2">
+        <div class="container">
+            <div class="row">
+            <div class="col-12">
+                <h1>{{ serie.title }}</h1><br>
+                <h2>Season {{ season.number }}</h2><br>
+                <h3>Episode {{ episode.number }} :</h3>
+                <h3>{{ episode.title }}</h3>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row text-center mt-2">	
+        <div class="col-md-6">
+            <h4>Imdb</h4>
+            <a href="https://www.imdb.com/title/{{ episode.imdb }}">Imdb link</a>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>Date</h4>
+            <p>{{ episode.date|date('d-m-Y') }}</p>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>IMDB Rating</h4>
+            <p>{{ episode.imdbrating }}</p>
+            <br><br>
+        </div>
+        
+    </div>
+
+    <div class="row justify-content-center">
+        <a class="btn btn-outline-secondary" href="{{ path('series_index') }}">Back to List</a>      
+    </div>
+
+    
 {% endblock %}

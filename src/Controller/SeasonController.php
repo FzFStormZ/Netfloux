@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
 use App\Entity\Season;
 use App\Entity\Series;
 use App\Entity\Episode;
