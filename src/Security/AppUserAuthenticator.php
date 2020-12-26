@@ -96,7 +96,7 @@ class AppUserAuthenticator extends AbstractFormLoginAuthenticator implements Pas
             return new RedirectResponse($targetPath);
         }
 
-        return new RedirectResponse($this->urlGenerator->generate('series_index'));
+        return new RedirectResponse($this->urlGenerator->generate('series_my'));
 
     }
 

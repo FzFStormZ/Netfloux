@@ -266,7 +266,7 @@ class User implements UserInterface
 
     public function getRoles()
     {
-        return $this->admin == '1' ? ['ROLE_ADMIN'] : ['ROLE_USER'];
+        return $this->admin == '1' ? ['ROLE_ADMIN', 'ROLE_USER'] : ['ROLE_USER'];
     }
 
     public function setRoles(array $role)

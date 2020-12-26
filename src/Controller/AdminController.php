@@ -2,7 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Actor;
+use App\Entity\Country;
+use App\Entity\Genre;
 use App\Entity\Rating;
+use App\Entity\Series;
+use App\Form\ImdbType;
 use App\Form\CommentType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -73,12 +78,77 @@ class AdminController extends AbstractController
     /**
      * @Route("/series_add", name="admin_series_add")
      */  
-    public function series_add(): Response
+    public function series_add(Request $request): Response
     {
+        $admin = $this->getUser();
 
+        if(isset($_POST['imdb_id']))
+        {
+            $url = "http://www.omdbapi.com/?apikey=48e8fab3&i=" . $_POST['imdb_id'];
+            $data = file_get_contents($url);
+            $serie = json_decode($data, true);
+
+            $newSerie = new Series();
+            $form = $this->createForm(ImdbType::class, $newSerie);
+            $form->handleRequest($request);
+    
+            if ($form->isSubmitted() && $form->isValid() && $admin) {
+    
+                $entityManager = $this->getDoctrine()->getManager();
+                $newSerie->setTitle($serie["Title"]);
+                $newSerie->setPlot($serie["Plot"]);
+                $newSerie->setImdb($_POST['imdb_id']);
+                $newSerie->setPoster(file_get_contents($serie["Poster"]));
+                $newSerie->setDirector($serie["Director"]);
+                $newSerie->setAwards($serie["Awards"]);
+
+                $years = explode($serie["Year"], "-");
+                if (count($years) == 1)
+                {
+                    $newSerie->setYearStart($years[0]);
+                } else
+                {
+                    $newSerie->setYearStart($years[0]);
+                    $newSerie->setYearEnd($years[1]);
+                }
+
+                $actors = explode($serie["Actors"], ", ");
+                foreach ($actors as $name)
+                {
+                    $actor = new Actor();
+                    $actor->setName($name);
+                    $newSerie->addActor($actor);
+                }
+
+                $countries = explode($serie["Country"], ", ");
+                foreach ($countries as $name)
+                {
+                    $country = new Country();
+                    $country->setName($name);
+                    $newSerie->addCountry($country);
+                }
+
+                $genres = explode($serie["Genre"], ", ");
+                foreach ($genres as $name)
+                {
+                    $genre = new Genre();
+                    $genre->setName($name);
+                    $newSerie->addGenre($genre);
+                }
+    
+                $entityManager->persist($newSerie);
+                $entityManager->flush();
+                // do anything else you need here, like send an email
+    
+                return $this->redirectToRoute('series_index');
+            }
+        }
+
+       
 
         return $this->render('admin/series_add.html.twig', [
-            'controller_name' => 'AdminController',
+            'form' => isset($_POST['imdb_id']) ? $form->createView() : $form = null,
+
         ]);
     }
 }
