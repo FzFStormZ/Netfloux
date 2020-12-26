@@ -38,27 +38,27 @@ class SeriesController extends AbstractController
             $title = "";
         }
 
-        $series = null;
+        $series = array();
+        $a = null;
 
         // Search by Country
         if (isset($_GET['country'])) {
             $country = $_GET['country'];
             if ($country != "") {
-                $countryObj = $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
+                $a = $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
                     ->where('c.name LIKE :name')
                     ->setParameter('name', '%' . $country . '%')
                     ->getQuery()
                     ->getOneOrNullResult();
 
-                $countrySeries = $countryObj->getSeries();
-
-                $series = $countrySeries;
+                    $series = $a->getSeries()->toArray();
             }
         } else {
             $country = "";
         }
 
         $series2 = array();
+
         // Search by Genre
         if (isset($_GET['genre'])) {
             $genre = $_GET['genre'];
@@ -69,7 +69,8 @@ class SeriesController extends AbstractController
                     ->getQuery()
                     ->getOneOrNullResult();
 
-                $genreSeries = $genreObj->getSeries();
+                $genreSeries = $genreObj->getSeries()->toArray();
+
                 if ($series == array()) {
                     $series2 = $genreSeries;
                 } else {
@@ -86,29 +87,36 @@ class SeriesController extends AbstractController
             $genre = "";
         }
 
-        if ($series2 != null) {
+        if ($series2 != array()) {
             $series = $series2;
         }
+
         //Search by Title
         $trueSeries = array();
-        if ($series == null) {
+
+        if ($series == array()) {
             $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
                 ->where('s.title LIKE :title')
                 ->setParameter('title', '%' . $title . '%')
                 ->getQuery()
                 ->getResult();
         } else {
-            foreach ($series as $serie) {
-                if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
-                    array_push($trueSeries, $serie);
+            if($title != ""){
+                foreach ($series as $serie) {
+                    
+                        if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
+                            array_push($trueSeries, $serie);
+                        }
+                    
+                    
                 }
-            }
-            if ($trueSeries == array()) {
-                $series = array();
+                if ($trueSeries == array()) {
+                    $series = array();
+                }
             }
         }
 
-        if ($trueSeries != null) {
+        if ($trueSeries != array()) {
             $series = $trueSeries;
         }
 
@@ -159,7 +167,7 @@ class SeriesController extends AbstractController
             }
         }
 
-
+        
 
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
@@ -176,23 +184,19 @@ class SeriesController extends AbstractController
             $page--;
         }
 
-        if(count($series) > ($page-1)*15+$lenght){
+        if(count($series) > ($page-1)*$lenght+$lenght){
             $tmp = array_slice($series, (($page-1)*$lenght), $lenght);
         } else {
-            $tmplenght = ($page-1)*15+$lenght - count($series);
+            $tmplenght = count($series) - ($page-1)*$lenght;
             $tmp = array_slice($series, (($page-1)*$lenght), $tmplenght);
         }
 
-        $maxPage = (int)(count($series) / $lenght);
+        $maxPage = (int)(count($series) / $lenght)+1;
 
         $series = $tmp;
 
-
-        
-
-        
-        
-
+        $genre = "";
+        $sort = "";
 
         $poster = array();
 
