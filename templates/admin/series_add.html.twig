@@ -7,5 +7,18 @@
     <section class="navbar-area p-3 mb-2 bg-primary text-white">
         {% include 'home/navbar.html.twig' %}
     </section>
+    <br>
+    <br>
+    <br>
+    <br>
+    <div class="jumbotron text-center" >    
+        <div class="container">
+            <h1>Add new serie</h1>
+             {{ form_start(imdbForm) }}
+                {{ form_row(imdbForm.imdb)}}
+                <button type="submit" class="btn btn-outline-secondary">Send</button>
+            {{ form_end(imdbForm) }}
+        </div>
+    </div>
     
 {% endblock %}

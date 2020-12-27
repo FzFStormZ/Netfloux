@@ -135,7 +135,7 @@ class SeriesController extends AbstractController
                 }
                 $avg /= count($ratings);
             }
-            $tabRating[$serie->getId()] = $avg;
+            $tabRating[$serie->getId()] = round($avg, 1);
             $seriesId[$serie->getId()] = $serie;
         }
 

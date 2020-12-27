@@ -2,11 +2,11 @@
 
 namespace App\Form;
 
-use App\Entity\User;
-use Doctrine\DBAL\Types\TextType;
+use App\Entity\Series;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class ImdbType extends AbstractType
 {
@@ -22,7 +22,7 @@ class ImdbType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults([
-            
+            'data_class' => Series::class,
         ]);
     }
 }

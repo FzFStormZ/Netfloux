@@ -6,7 +6,6 @@ use App\Entity\Season;
 use App\Entity\Series;
 use App\Entity\Episode;
 use App\Form\WatchedType;
-use Symfony\Component\Form\FormView;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
