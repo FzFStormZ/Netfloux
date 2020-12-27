@@ -13,9 +13,6 @@ class FollowType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('follow', CheckboxType::class, [
-                'mapped' => false,
-            ])
         ;
     }
 

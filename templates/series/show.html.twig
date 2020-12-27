@@ -40,13 +40,15 @@
                     <h3 class="mt-0 mb-1">Note : {{ rating.value }}/10</h3>
                     <p>Your comment : {{ rating.comment }}</p>
                 {% endif %}
+                <br>
                 {% if follow == false %}
                     {{ form_start(followForm) }}
-                        {{ form_row(followForm.follow) }}
-                        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                        <button type="submit" class="btn btn-outline-primary">Follow</button>
                     {{ form_end(followForm) }}
                 {% else %}
-                    <p>Already followed</p> <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
+                    {{ form_start(unfollowForm) }}
+                        <button type="submit" class="btn btn-outline-primary">Unfollow</button>
+                    {{ form_end(unfollowForm) }} <!-- We can add here the possibilty to unfollow (this possibility is already in the webpage /myseries -->
                 {% endif %}
             {% endif %}
             <br><br>
@@ -136,9 +138,9 @@
     </div>
 
     <div class="row justify-content-center">
-        <a class="btn btn-outline-secondary" href="{{ path('series_index') }}">Back to List</a>
+        <a class="btn btn-outline-primary" href="{{ path('series_index') }}">Back to List</a>
         {{ include('series/_delete_form.html.twig') }}
-        <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': series.id}) }}">Edit</a>
+        <a class="btn btn-outline-primary" href="{{ path('series_edit', {'id': series.id}) }}">Edit</a>
         
     </div>
 
