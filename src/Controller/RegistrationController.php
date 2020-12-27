@@ -2,13 +2,14 @@
 
 namespace App\Controller;
 
-use App\Entity\Country;
+use DateTime;
 use App\Entity\User;
+use App\Entity\Country;
 use App\Form\RegistrationFormType;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class RegistrationController extends AbstractController
@@ -27,6 +28,11 @@ class RegistrationController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $entityManager = $this->getDoctrine()->getManager();
+
+            $country = $form->get('country')->getData();
+            $otherCountry = $form->get('otherCountry')->getData();
+
             // encode the plain password
             $user->setPassword(
                 $passwordEncoder->encodePassword(
@@ -34,10 +40,30 @@ class RegistrationController extends AbstractController
                     $form->get('plainPassword')->getData()
                 )
             );
+            
+            date_default_timezone_set('Europe/Paris');
+            $user->setRegisterDate(new DateTime());
 
-            $country = $form->get('country')->getData();
+            // If the otherCountry is empty
+            if ($otherCountry == "")
+            {
+                if ($country == 'Choose a country')
+                {
+                    $user->setCountry(null);
+                } else 
+                {
+                    $user->setCountry($country);
+                }
+                
+            } else
+            {
+                $country = new Country();
+                $country->setName($otherCountry);
+                $user->setCountry($country);
 
-            $entityManager = $this->getDoctrine()->getManager();
+                $entityManager->persist($country);
+            }
+            
             $entityManager->persist($user);
             $entityManager->flush();
             // do anything else you need here, like send an email
