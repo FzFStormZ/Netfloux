@@ -86,20 +86,22 @@
             <br><br>
         </div>
         <div class="col-md-6">
-            <h4>Director</h4>
-            <p>{{ series.director }}</p>
-            <br><br>
-        </div>
-        <div class="col-md-6">
             <h4>YoutubeTrailers</h4>
             <iframe width="256" height="144"
             src="{{ trailer }}" frameborder="0" allowfullscreen>
             </iframe>
             <br><br>
-        </div>	
+        </div>
         <div class="col-md-6">
-            <h4>Awards</h4>
-            <p>{{ series.awards }}</p>
+            <h4>Director</h4>
+            <p>{{ series.director }}</p>
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>Actors</h4>
+            {% for actor in actors %}
+                <p>{{ actor.name }}</p>
+            {% endfor %}
             <br><br>
         </div>
         <div class="col-md-6">
@@ -112,7 +114,25 @@
             <p>{{ series.yearEnd }}</p>
             <br><br>
         </div>
-        
+        <div class="col-md-6">
+            <h4>Genres</h4>
+            {% for genre in genres %}
+                <p>{{ genre.name }}</p>
+            {% endfor %}
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>Countries</h4>
+            {% for country in countries %}
+                <p>{{ country.name }}</p>
+            {% endfor %}
+            <br><br>
+        </div>
+        <div class="col-md-6">
+            <h4>Awards</h4>
+            <p>{{ series.awards }}</p>
+            <br><br>
+        </div>
     </div>
 
     <div class="row justify-content-center">

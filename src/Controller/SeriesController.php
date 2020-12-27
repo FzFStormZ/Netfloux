@@ -254,6 +254,18 @@ class SeriesController extends AbstractController
                 ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
         }
 
+        // To get genres
+        $genres = $series->getGenre();
+
+        // To get countries
+        $countries = $series->getCountry();
+
+        // To get actors
+        $actors = $series->getActor();
+
+        // To get YouTube trailer
+        $trailer = $series->getYoutubeTrailer();
+        $trailer = str_replace("watch?v=", "embed/", $trailer);
 
         // To print FollowForm
         $followForm = $this->createForm(FollowType::class, $user);
@@ -333,13 +345,13 @@ class SeriesController extends AbstractController
             }
         }
 
-        $trailer = $series->getYoutubeTrailer();
-        $trailer = str_replace("watch?v=", "embed/", $trailer);
-
         return $this->render('series/show.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'seasons' => $seasons,
+            'genres' => $genres,
+            'countries' => $countries,
+            'actors' => $actors,
             'episodes' => $episodes,
             'followForm' => $followForm->createView(),
             'follow' => $follow,
