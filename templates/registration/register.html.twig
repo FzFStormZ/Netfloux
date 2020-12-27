@@ -18,9 +18,10 @@
         {{ form_row(registrationForm.plainPassword, {
             label: 'Password'
         }) }}
-        {{ form_row(registrationForm.agreeTerms) }}
-
+        {{ form_row(registrationForm.country) }}
+        {{ form_row(registrationForm.otherCountry) }}
         {{ form_row(registrationForm.captcha) }}
+        {{ form_row(registrationForm.agreeTerms) }}
         <br>
         <button type="submit" class="btn btn-outline-primary">Register</button>
     {{ form_end(registrationForm) }}

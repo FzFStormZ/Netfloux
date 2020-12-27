@@ -16,6 +16,7 @@ use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 
 class RegistrationFormType extends AbstractType
 {
@@ -24,7 +25,7 @@ class RegistrationFormType extends AbstractType
 
         foreach($options['countries'] as $country)
         {
-            $countries[$country->getName()] = $country->getName();
+            $countries[$country->getName()] = $country;
         }
 
         $builder
@@ -33,7 +34,12 @@ class RegistrationFormType extends AbstractType
             ->add('country', ChoiceType::class, [
                 'mapped' => false,
                 'placeholder' => 'Choose a country',
+                'required' => false,
                 'choices' => $countries,
+            ])
+            ->add('otherCountry', TextType::class, [
+                'mapped' => false,
+                'required' => false,
             ])
             ->add('plainPassword', PasswordType::class, [
                 // instead of being set onto the object directly,
