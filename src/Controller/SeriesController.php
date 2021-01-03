@@ -2,23 +2,21 @@
 
 namespace App\Controller;
 
-use App\Entity\Episode;
-use App\Entity\Country;
+use DateTime;
 use App\Entity\Genre;
+use App\Entity\Rating;
 use App\Entity\Season;
 use App\Entity\Series;
-use App\Entity\User;
-use App\Entity\Rating;
+use App\Entity\Country;
+use App\Entity\Episode;
 use App\Form\FollowType;
-use App\Form\SeriesType;
 use App\Form\RatingType;
-use DateTime;
-use DateTimeZone;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use App\Form\SearchType;
+use App\Form\SeriesType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Constraints\Date;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 /**
  * @Route("/series")
@@ -26,12 +24,115 @@ use Symfony\Component\Validator\Constraints\Date;
 class SeriesController extends AbstractController
 {
     /**
-     * @Route("/", name="series_index", methods={"GET"})
+     * @Route("/", name="series_index", methods={"GET", "POST"})
      */
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        // Variables
+        $countries = $this->getDoctrine()
+            ->getRepository(Country::class)
+            ->findAll();
+        $genres = $this->getDoctrine()
+            ->getRepository(Genre::class)
+            ->findAll();
+        $series = $this->getDoctrine()
+            ->getRepository(Series::class)
+            ->findAll();
+    
+
+        /*
+        $title = "";
+        $country = null;
+        $genre = null;
+        $sort = "";
+        */
+        $tabRating = array();
+        
+
+        $searchForm = $this->createForm(SearchType::class, null, ['countries' => $countries, 'genres' => $genres]);
+        $searchForm->handleRequest($request);
+
+        if ($searchForm->isSubmitted() && $searchForm->isValid()) {
+            
+            //Variables
+            $title = $searchForm->get('title')->getData();
+            $country = array($searchForm->get('country')->getData());
+            $genre = array($searchForm->get('genre')->getData());
+            $sort = $searchForm->get('sort')->getData();
+
+            if ($country != "Choose a country" && $genre != "Choose a genre")
+            {
+                $series = $this->getDoctrine()
+                    ->getRepository(Series::class)
+                    ->findBy(["country" => $country, "genre" => $genre]);
+
+            } else if ($country != "Choose a country" && $genre == "Choose a genre")
+            {
+                $series = $this->getDoctrine()
+                    ->getRepository(Series::class)
+                    ->findBy(["country" => $country]);
+
+            } else if ($country == "Choose a country" && $genre != "Choose a genre")
+            {
+                $series = $this->getDoctrine()
+                    ->getRepository(Series::class)
+                    ->findBy(["genre" => $genre]);
+
+            }
+
+            if ($title != "")
+            {
+                $trueSeries = array();
+                foreach ($series as $serie) {
+                    if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
+                        array_push($trueSeries, $serie);
+                    }
+                }
+
+                $series = $trueSeries;
+            }
+
+            foreach ($series as $serie){
+                $ratings = $this->getDoctrine()
+                    ->getRepository(Rating::class)
+                    ->findBy(['series' => $serie]);
+    
+                $avg = 0;
+                
+                if(count($ratings) > 0){
+                    foreach ($ratings as $rating){
+                        $avg += $rating->getValue();
+                    }
+                    $avg /= count($ratings);
+                }
+                $tabRating[$serie->getId()] = round($avg, 1);
+                $seriesId[$serie->getId()] = $serie;
+            }
+    
+            if ($sort == "Descending"){
+                arsort($tabRating);
+                $i = 0;
+                $series = array();
+                $keys = array_keys($tabRating);
+                foreach ($tabRating as $rating) {
+                    $series[$i] = $seriesId[$keys[$i]];
+                    $i++;
+                }
+            } else if ($sort == "Ascending"){
+                asort($tabRating);
+                $i = 0;
+                $series = array();
+                $keys = array_keys($tabRating);
+                foreach ($tabRating as $rating) {
+                    $series[$i] = $seriesId[$keys[$i]];
+                    $i++;
+                }
+            }
+
+        }
 
 
+        /*
         if (isset($_GET['title'])) {
             $title = $_GET['title'];
         } else {
@@ -166,9 +267,9 @@ class SeriesController extends AbstractController
                 $i++;
             }
         }
+        */
 
         
-
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
         } else {
@@ -195,38 +296,23 @@ class SeriesController extends AbstractController
 
         $series = $tmp;
 
-        $genre = "";
-        $sort = "";
-
         $poster = array();
 
         foreach($series as $serie){
             $stream = $serie->getPoster();
             array_push($poster, base64_encode(stream_get_contents($stream)));
         }
-
-        // To get Countries
-        $countries = $this->getDoctrine()
-            ->getRepository(Country::class)
-            ->findAll();
-
-        // To get Genres
-        $genres = $this->getDoctrine()
-            ->getRepository(Genre::class)
-            ->findAll();
+ 
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
             'poster' => $poster,
             'countries' => $countries,
             'genres' => $genres,
-            'currentTitle' => $title,
-            'currentCountry' => $country,
-            'currentGenre' => $genre,
             'currentPage' => $page,
-            'currentSort' => $sort,
             'maxPage' => $maxPage,
             'tabRating' => $tabRating,
+            'searchForm' => $searchForm->createView(),
         ]);
     }
 

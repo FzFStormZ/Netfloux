@@ -17,8 +17,6 @@ class EpisodeController extends AbstractController
      */
     public function index(Series $serie_id, Season $season_id, Episode $ep_id, Request $request): Response
     {
-
-
         return $this->render('episode/index.html.twig', [
             'serie' => $serie_id,
             'season' => $season_id,

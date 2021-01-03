@@ -20,7 +20,7 @@ class SeasonController extends AbstractController
     {
         // Variables
         $user = $this->getUser(); // Connected user (user = null is not)
-        $episodes_not_watched = array();
+        $episodes_not_watched = array(); // Array of Episodes not watched bu the user
         $forms = array();
 
         // To get episodes
@@ -32,6 +32,7 @@ class SeasonController extends AbstractController
             $episodes_not_watched = $episodes; // Add all episodes
 
             if (!($user->getEpisode()->isEmpty())) {
+                
                 // To delete watched an episode        
                 foreach ($user->getEpisode() as $ep)
                 {

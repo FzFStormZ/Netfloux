@@ -30,6 +30,7 @@ class RegistrationController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
 
+            // Get data
             $country = $form->get('country')->getData();
             $otherCountry = $form->get('otherCountry')->getData();
 
@@ -41,6 +42,7 @@ class RegistrationController extends AbstractController
                 )
             );
             
+            // Set Register Date automatically
             date_default_timezone_set('Europe/Paris');
             $user->setRegisterDate(new DateTime());
 
@@ -66,7 +68,6 @@ class RegistrationController extends AbstractController
             
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
             return $this->redirectToRoute('series_index');
         }

@@ -30,7 +30,6 @@
                     </tr>
                 </thead>
                 <tbody>
-                {% set i = 0 %}
                 {% for rating in ratings %}
                     <tr height="50px">
                         <th>{{rating.series.title}}</th>
@@ -40,14 +39,13 @@
                         <td>{{rating.date|date('Y-m-d H:i:s')}}</td>
                         {% if rating.comment != "" %}
                             <td>
-                                {{ form_start(commentsForm[i]) }}
+                                {{ form_start(commentsForm[rating.id]) }}
                                     <button type="submit" class="btn btn-outline-secondary">Delete</button>
-                                {{ form_end(commentsForm[i]) }}
+                                {{ form_end(commentsForm[rating.id]) }}
                             </td>
                         {% else %}
                             <td>No comment</td>
                         {% endif %}
-                        {% set i = i + 1 %}
                     </tr>
                 {% endfor %}   
                 </tbody>

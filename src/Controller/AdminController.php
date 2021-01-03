@@ -40,7 +40,6 @@ class AdminController extends AbstractController
     public function comments(Request $request): Response
     {
         $admin = $this->getUser();
-        $i = 0;
         $commentsForm = array();
         
         $ratings = $this->getDoctrine()
@@ -53,7 +52,7 @@ class AdminController extends AbstractController
             {
                 if ($rating->getComment() != "")
                 {
-                    $commentForm = $this->get('form.factory')->createNamed('form_' . (string)$i, CommentType::class, $rating);
+                    $commentForm = $this->get('form.factory')->createNamed('form_' . (string)$rating->getId(), CommentType::class, $rating);
                     $commentForm->handleRequest($request);
 
                     if ($commentForm->isSubmitted() && $commentForm->isValid() && $admin) {
@@ -65,10 +64,8 @@ class AdminController extends AbstractController
                         return $this->redirectToRoute('admin_comments');
                     }
 
-                    $commentsForm[$i] = $commentForm->createView();
+                    $commentsForm[$rating->getId()] = $commentForm->createView();
                 }
-
-                $i++;    
             }
         }
             
