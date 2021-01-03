@@ -15,13 +15,13 @@ class SearchType extends AbstractType
         // To set up countries in ChoiceType
         foreach($options['countries'] as $country)
         {
-            $countries[$country->getName()] = $country;
+            $countries[$country->getName()] = $country->getName();
         }
 
         // To set up genres in ChoiceType
         foreach($options['genres'] as $genre)
         {
-            $genres[$genre->getName()] = $genre;
+            $genres[$genre->getName()] = $genre->getName();
         }
 
         $builder
@@ -31,13 +31,11 @@ class SearchType extends AbstractType
             ])
             ->add('country', ChoiceType::class, [
                 'mapped' => false,
-                'placeholder' => "Choose a country",
                 'required' => false,
                 'choices' => $countries,
             ])
             ->add('genre', ChoiceType::class, [
                 'mapped' => false,
-                'placeholder' => "Choose a genre",
                 'required' => false,
                 'choices' => $genres,
             ])

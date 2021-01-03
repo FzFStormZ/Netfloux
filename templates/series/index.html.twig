@@ -15,13 +15,9 @@
 
     <div class="jumbotron text-center mt-2">
         <div class="container">
-            {{ form_start(searchForm) }}
-                {{ form_row(searchForm.title) }}
-                {{ form_row(searchForm.country) }}
-                {{ form_row(searchForm.genre) }}
-                {{ form_row(searchForm.sort) }}
-                <button type="submit" class="btn btn-outline-secondary">Search</button>
-            {{ form_end(searchForm) }}
+            
+            {{ include('series/_search_form.html.twig') }}
+
             <form method="GET">
                 {% if currentPage > 1 %}
                 <a href="/series/?page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
@@ -59,9 +55,6 @@
                                     {% endif %}
                                 {% endfor %}
                             </div>
-                            <div class="features-content">
-                                <a class="btn btn-outline-secondary" href="{{ path('series_edit', {'id': serie.id}) }}">EDIT</a>
-                            </div>
                         </div>
                     </div>
                     {% set i = i + 1 %}
@@ -80,7 +73,6 @@
                 <a href="/series/?page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
                 {% endif %}
                 <br><br>
-                <a href="{{ path('series_new') }}" class="btn btn-secondary">Create new</a>
             </div>
         </div>
     </section>

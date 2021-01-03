@@ -13,9 +13,9 @@
         <div class="container">
             <div class="row">
             <div class="col-12">
-                <h1>{{ series.title }}</h1>
+                <h1>{{ serie.title }}</h1>
                 <br>
-                <h3>Season {{ seasons.number }}</h3>
+                <h3>Season {{ season.number }}</h3>
             </div>
             </div>
         </div>
@@ -36,15 +36,14 @@
             <div class="single-features mt-40">
                 <div class="features-title-icon text-center">
                     <div class="d-flex justify-content-center">
-                        <h4 class="features-title"><a href="{{ path('episode_show', {'serie_id': series.id, 'season_id': seasons.id, 'ep_id': episode.id}) }}">Episode {{ episode.number }}</a></h4>
+                        <h4 class="features-title"><a href="{{ path('episode_show', {'serie_id': serie.id, 'season_id': season.id, 'ep_id': episode.id}) }}">Episode {{ episode.number }}</a></h4>
                     </div>
                     <p>{{episode.title}}</p>
                     {% if app.user %}
                         {% if episode in episodes_not_watched %}
-                            {{ form_start(notWatchedForms[episode.id]) }}
-                                {{ form_row(notWatchedForms[episode.id].watched) }}
-                                <button type="submit" class="btn btn-outline-secondary">Submit</button>
-                            {{ form_end(notWatchedForms[episode.id]) }}
+
+                            {{ include('season/_watched_ep_form.html.twig') }}
+                            
                         {% else %}
                             <p>Already watched</p>
                         {% endif %}
@@ -57,7 +56,7 @@
     </div>
     <br>
     <div class="row justify-content-center">
-        <a href="{{ path('series_show', {'id': series.id}) }}" class="btn btn-outline-primary">Go Back</a>
+        <a href="{{ path('series_show', {'id': serie.id}) }}" class="btn btn-outline-primary">Go Back</a>
     </div>
     <br>
     <br>

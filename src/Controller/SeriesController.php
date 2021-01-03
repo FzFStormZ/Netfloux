@@ -4,16 +4,14 @@ namespace App\Controller;
 
 use DateTime;
 use App\Entity\Genre;
-use App\Entity\Rating;
-use App\Entity\Season;
-use App\Entity\Series;
 use App\Entity\Country;
-use App\Entity\Episode;
+use App\Entity\Rating;
+use App\Entity\Series;
 use App\Form\FollowType;
 use App\Form\UnFollowType;
 use App\Form\RatingType;
 use App\Form\SearchType;
-use App\Form\SeriesType;
+use App\Repository\SeriesRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -27,7 +25,7 @@ class SeriesController extends AbstractController
     /**
      * @Route("/", name="series_index", methods={"GET", "POST"})
      */
-    public function index(Request $request): Response
+    public function index(Request $request, SeriesRepository $repository): Response
     {
         // Variables
         $countries = $this->getDoctrine()
@@ -39,14 +37,6 @@ class SeriesController extends AbstractController
         $series = $this->getDoctrine()
             ->getRepository(Series::class)
             ->findAll();
-    
-
-        /*
-        $title = "";
-        $country = null;
-        $genre = null;
-        $sort = "";
-        */
         $tabRating = array();
         
 
@@ -57,226 +47,19 @@ class SeriesController extends AbstractController
             
             //Variables
             $title = $searchForm->get('title')->getData();
-            $country = array($searchForm->get('country')->getData());
-            $genre = array($searchForm->get('genre')->getData());
+            $country = $searchForm->get('country')->getData();
+            $genre = $searchForm->get('genre')->getData();
             $sort = $searchForm->get('sort')->getData();
 
-            if ($country != "Choose a country" && $genre != "Choose a genre")
-            {
-                $series = $this->getDoctrine()
-                    ->getRepository(Series::class)
-                    ->findBy(["country" => $country, "genre" => $genre]);
-
-            } else if ($country != "Choose a country" && $genre == "Choose a genre")
-            {
-                $series = $this->getDoctrine()
-                    ->getRepository(Series::class)
-                    ->findBy(["country" => $country]);
-
-            } else if ($country == "Choose a country" && $genre != "Choose a genre")
-            {
-                $series = $this->getDoctrine()
-                    ->getRepository(Series::class)
-                    ->findBy(["genre" => $genre]);
-
-            }
-
-            if ($title != "")
-            {
-                $trueSeries = array();
-                foreach ($series as $serie) {
-                    if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
-                        array_push($trueSeries, $serie);
-                    }
-                }
-
-                $series = $trueSeries;
-            }
-
-            foreach ($series as $serie){
-                $ratings = $this->getDoctrine()
-                    ->getRepository(Rating::class)
-                    ->findBy(['series' => $serie]);
-    
-                $avg = 0;
-                
-                if(count($ratings) > 0){
-                    foreach ($ratings as $rating){
-                        $avg += $rating->getValue();
-                    }
-                    $avg /= count($ratings);
-                }
-                $tabRating[$serie->getId()] = round($avg, 1);
-                $seriesId[$serie->getId()] = $serie;
-            }
-    
-            if ($sort == "Descending"){
-                arsort($tabRating);
-                $i = 0;
-                $series = array();
-                $keys = array_keys($tabRating);
-                foreach ($tabRating as $rating) {
-                    $series[$i] = $seriesId[$keys[$i]];
-                    $i++;
-                }
-            } else if ($sort == "Ascending"){
-                asort($tabRating);
-                $i = 0;
-                $series = array();
-                $keys = array_keys($tabRating);
-                foreach ($tabRating as $rating) {
-                    $series[$i] = $seriesId[$keys[$i]];
-                    $i++;
-                }
-            }
-
+            $series = $repository->findCustom($title, $country, $genre, $sort);
         }
-
-
-        /*
-        if (isset($_GET['title'])) {
-            $title = $_GET['title'];
-        } else {
-            $title = "";
-        }
-
-        $series = array();
-        $a = null;
-
-        // Search by Country
-        if (isset($_GET['country'])) {
-            $country = $_GET['country'];
-            if ($country != "") {
-                $a = $this->getDoctrine()->getRepository(Country::class)->createQueryBuilder('c')
-                    ->where('c.name LIKE :name')
-                    ->setParameter('name', '%' . $country . '%')
-                    ->getQuery()
-                    ->getOneOrNullResult();
-
-                    $series = $a->getSeries()->toArray();
-            }
-        } else {
-            $country = "";
-        }
-
-        $series2 = array();
-
-        // Search by Genre
-        if (isset($_GET['genre'])) {
-            $genre = $_GET['genre'];
-            if ($genre != "") {
-                $genreObj = $this->getDoctrine()->getRepository(Genre::class)->createQueryBuilder('g')
-                    ->where('g.name LIKE :name')
-                    ->setParameter('name', '%' . $genre . '%')
-                    ->getQuery()
-                    ->getOneOrNullResult();
-
-                $genreSeries = $genreObj->getSeries()->toArray();
-
-                if ($series == array()) {
-                    $series2 = $genreSeries;
-                } else {
-                    foreach ($series as $serie) {
-                        foreach ($genreSeries as $genreSerie) {
-                            if ($serie->getTitle() == $genreSerie->getTitle()) {
-                                array_push($series2, $serie);
-                            }
-                        }
-                    }
-                }
-            }
-        } else {
-            $genre = "";
-        }
-
-        if ($series2 != array()) {
-            $series = $series2;
-        }
-
-        //Search by Title
-        $trueSeries = array();
-
-        if ($series == array()) {
-            $series = $this->getDoctrine()->getRepository(Series::class)->createQueryBuilder('s')
-                ->where('s.title LIKE :title')
-                ->setParameter('title', '%' . $title . '%')
-                ->getQuery()
-                ->getResult();
-        } else {
-            if($title != ""){
-                foreach ($series as $serie) {
-                    
-                        if (str_contains(strtolower($serie->getTitle()), strtolower($title))) {
-                            array_push($trueSeries, $serie);
-                        }
-                    
-                    
-                }
-                if ($trueSeries == array()) {
-                    $series = array();
-                }
-            }
-        }
-
-        if ($trueSeries != array()) {
-            $series = $trueSeries;
-        }
-
-
-        if (isset($_GET['sort'])) {
-            $sort = $_GET['sort'];
-        } else {
-            $sort = "";
-        }
-
-        $seriesId = array();
-        $tabRating = array();
-
-        foreach ($series as $serie){
-            $ratings = $this->getDoctrine()
-                ->getRepository(Rating::class)
-                ->findBy(['series' => $serie]);
-
-            $avg = 0;
-            
-            if(count($ratings) > 0){
-                foreach ($ratings as $rating){
-                    $avg += $rating->getValue();
-                }
-                $avg /= count($ratings);
-            }
-            $tabRating[$serie->getId()] = round($avg, 1);
-            $seriesId[$serie->getId()] = $serie;
-        }
-
-        if ($sort == "Descending"){
-            arsort($tabRating);
-            $i = 0;
-            $series = array();
-            $keys = array_keys($tabRating);
-            foreach ($tabRating as $rating) {
-                $series[$i] = $seriesId[$keys[$i]];
-                $i++;
-            }
-        } else if ($sort == "Ascending"){
-            asort($tabRating);
-            $i = 0;
-            $series = array();
-            $keys = array_keys($tabRating);
-            foreach ($tabRating as $rating) {
-                $series[$i] = $seriesId[$keys[$i]];
-                $i++;
-            }
-        }
-        */
-
         
+        // A CORRIGER
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
         } else {
             $page = 1;
         }
-
 
         $lenght = 18;
 
@@ -324,22 +107,12 @@ class SeriesController extends AbstractController
     {
         $user = $this->getUser(); // Connected user
 
-
         // To get the poster
         $stream = $series->getPoster();
         $poster = base64_encode(stream_get_contents($stream));
 
         // To get seasons
-        $seasons = $this->getDoctrine()
-            ->getRepository(Season::class)
-            ->findBy(['series' => $series->getId()], ['number' => 'ASC']); // Get seasons about the serie instance
-
-        // To get episodes
-        for ($i = 0; $i < count($seasons); $i++) {
-            $episodes[$i] = $this->getDoctrine()
-                ->getRepository(Episode::class)
-                ->findBy(['season' => $seasons[$i]->getId()], ['number' => 'ASC']); // Get episodes about each season of the serie
-        }
+        $seasons = $series->getSeasons();
 
         // To get genres
         $genres = $series->getGenre();
@@ -380,18 +153,14 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
         }
 
-
-
-        // Variables for rating
-        $ratings = $this->getDoctrine()
-            ->getRepository(Rating::class)
-            ->findAll(); // Get seasons about the serie instance
+        // Get ratings about the serie
+        $ratings = $series->getRatings();
         $ratingForm = null;
         $found = false;
 
-        // Find if we have a rating for this serie and for this user
+        // Find if we have a rating for this user
         foreach ($ratings as $ratingT) {
-            if ($ratingT->getSeries() == $series && $ratingT->getUser() == $user) {
+            if ($ratingT->getUser() == $user) {
                 $rating = $ratingT;
                 $found = true;
             }
@@ -453,7 +222,6 @@ class SeriesController extends AbstractController
             'genres' => $genres,
             'countries' => $countries,
             'actors' => $actors,
-            'episodes' => $episodes,
             'followForm' => $followForm->createView(),
             'unfollowForm' => $unfollowForm->createView(),
             'follow' => $follow,
@@ -463,62 +231,5 @@ class SeriesController extends AbstractController
             'trailer' => $trailer,
 
         ]);
-    }
-
-    /**
-     * @Route("/new", name="series_new", methods={"GET","POST"})
-     */
-    public function new(Request $request): Response
-    {
-        $series = new Series();
-        $form = $this->createForm(SeriesType::class, $series);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->persist($series);
-            $entityManager->flush();
-
-            return $this->redirectToRoute('series_index');
-        }
-
-        return $this->render('series/new.html.twig', [
-            'series' => $series,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}/edit", name="series_edit", methods={"GET","POST"})
-     */
-    public function edit(Request $request, Series $series): Response
-    {
-        $form = $this->createForm(SeriesType::class, $series);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $this->getDoctrine()->getManager()->flush();
-
-            return $this->redirectToRoute('series_index');
-        }
-
-        return $this->render('series/edit.html.twig', [
-            'series' => $series,
-            'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="series_delete", methods={"DELETE"})
-     */
-    public function delete(Request $request, Series $series): Response
-    {
-        if ($this->isCsrfTokenValid('delete' . $series->getId(), $request->request->get('_token'))) {
-            $entityManager = $this->getDoctrine()->getManager();
-            $entityManager->remove($series);
-            $entityManager->flush();
-        }
-
-        return $this->redirectToRoute('series_index');
     }
 }
