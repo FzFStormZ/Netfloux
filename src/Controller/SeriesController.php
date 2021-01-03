@@ -10,6 +10,7 @@ use App\Entity\Series;
 use App\Entity\Country;
 use App\Entity\Episode;
 use App\Form\FollowType;
+use App\Form\UnFollowType;
 use App\Form\RatingType;
 use App\Form\SearchType;
 use App\Form\SeriesType;
@@ -366,6 +367,20 @@ class SeriesController extends AbstractController
             return $this->redirectToRoute('series_my'); // To show his new follow serie
         }
 
+        // To print unFollowForm
+        $unfollowForm = $this->createForm(UnFollowType::class, $user);
+        $unfollowForm->handleRequest($request);
+
+        if ($unfollowForm->isSubmitted() && $unfollowForm->isValid() && $user) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $user->removeSeries($series);
+            $entityManager->flush($user);
+
+            return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
+        }
+
+
 
         // Variables for rating
         $ratings = $this->getDoctrine()
@@ -440,6 +455,7 @@ class SeriesController extends AbstractController
             'actors' => $actors,
             'episodes' => $episodes,
             'followForm' => $followForm->createView(),
+            'unfollowForm' => $unfollowForm->createView(),
             'follow' => $follow,
             'ratingForm' => $ratingForm == null ? $ratingForm = null : $ratingForm->createView(), // If ratingForm is null, we return null. Else, we return createView() of the ratingForm
             'rating' => $rating,

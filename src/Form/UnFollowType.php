@@ -13,9 +13,6 @@ class UnFollowType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('unfollow', CheckboxType::class, [
-                'mapped' => false,
-            ])
         ;
     }
 

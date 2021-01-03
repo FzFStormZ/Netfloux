@@ -51,7 +51,14 @@
                     {% endif %}
                 </div>
             </div>
+            
         </div>
     {% endfor %}
     </div>
+    <br>
+    <div class="row justify-content-center">
+        <a href="{{ path('series_show', {'id': series.id}) }}" class="btn btn-outline-primary">Go Back</a>
+    </div>
+    <br>
+    <br>
 {% endblock %}

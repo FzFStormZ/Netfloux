@@ -37,8 +37,7 @@
                                 </div>
                                 <div class="features-content">
                                     {{ form_start(unFollowForm[i]) }}
-                                        {{ form_row(unFollowForm[i].unfollow) }}
-                                        <button type="submit" class="btn btn-outline-secondary">Submit</button>
+                                        <button type="submit" class="btn btn-outline-primary">Unfollow</button>
                                     {{ form_end(unFollowForm[i]) }}
                                     <a class="btn btn-outline-secondary" href="https://www.imdb.com/title/{{ serie.imdb }}">Imdb link</a>
                                     <a class="btn btn-outline-secondary" href="{{ serie.youtubeTrailer }}">Youtube</a>
