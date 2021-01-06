@@ -24,27 +24,25 @@
                 </div>
             </div> <!-- row -->
             <div class="row justify-content-center">
-                {% set i = 0 %}
                 {% if series != null %}
                     {% for serie in series %}
                         <div class="col-lg-4 col-md-7 col-sm-9">
                             <div class="single-features mt-40">
                                 <div class="features-title-icon ">
-                                    <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                    <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[serie.id] }}"/></a>
                                     <div class="d-flex justify-content-center">
                                         <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>
                                     </div>
                                 </div>
                                 <div class="features-content">
-                                    {{ form_start(unFollowForm[i]) }}
-                                        <button type="submit" class="btn btn-outline-primary">Unfollow</button>
-                                    {{ form_end(unFollowForm[i]) }}
+
+                                    {{ include('user/_unfollow_form.html.twig') }}
+                                    
                                     <a class="btn btn-outline-secondary" href="https://www.imdb.com/title/{{ serie.imdb }}">Imdb link</a>
                                     <a class="btn btn-outline-secondary" href="{{ serie.youtubeTrailer }}">Youtube</a>
                                 </div>
                             </div>
                         </div>
-                        {% set i = i + 1 %}
                     {% endfor %}
                 {% else %}       
                     <br><p>You can add series on this page : <a href="{{ path('series_index') }}" class="btn btn-outline-secondary">List</a></p><br>

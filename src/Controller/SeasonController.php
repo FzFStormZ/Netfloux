@@ -23,13 +23,11 @@ class SeasonController extends AbstractController
         $episodes_not_watched = array(); // Array of Episodes not watched bu the user
         $forms = array();
 
-        // To get episodes
-        $episodes = $this->getDoctrine()
-            ->getRepository(Episode::class)
-            ->findBy(['season' => $seasons_id], ['number' => 'ASC']); // Get episodes about each season of the serie
+        // Get all episodes
+        $episodes = $seasons_id->getEpisodes();
 
         if ($user != null) {
-            $episodes_not_watched = $episodes; // Add all episodes
+            $episodes_not_watched = $episodes;
 
             if (!($user->getEpisode()->isEmpty())) {
                 
@@ -67,8 +65,8 @@ class SeasonController extends AbstractController
         }
 
         return $this->render('season/index.html.twig', [
-            'series' => $series_id,
-            'seasons' => $seasons_id,
+            'serie' => $series_id,
+            'season' => $seasons_id,
             'episodes' => $episodes,
             'episodes_not_watched' => count($episodes_not_watched) != 0 ? $episodes_not_watched : $episodes_not_watched = null,
             'notWatchedForms' => $forms,

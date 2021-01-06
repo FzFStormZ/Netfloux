@@ -224,7 +224,7 @@ class AdminController extends AbstractController
                 
         }
 
-        return $this->render('admin/series_add.html.twig', [
+        return $this->render('admin/new.html.twig', [
             'imdbForm' => $imdbForm->createView(),
             'admin' => $admin,
         ]);
