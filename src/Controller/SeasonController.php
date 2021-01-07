@@ -27,7 +27,7 @@ class SeasonController extends AbstractController
         $episodes = $seasons_id->getEpisodes();
 
         if ($user != null) {
-            $episodes_not_watched = $episodes;
+            $episodes_not_watched = $episodes->toArray();
 
             if (!($user->getEpisode()->isEmpty())) {
                 
