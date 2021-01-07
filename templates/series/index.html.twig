@@ -18,15 +18,7 @@
             
             {{ include('series/_search_form.html.twig') }}
 
-            <form method="GET">
-                {% if currentPage > 1 %}
-                <a href="/series/?page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
-                {% endif %}
-                Page : {{currentPage}}
-                {% if currentPage < maxPage %}
-                <a href="/series/?page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
-                {% endif %}
-            </form>
+            {{ knp_pagination_render(series) }}
         </div>
     </div>
 
@@ -62,16 +54,7 @@
             </div>
         </div>
         <div class="jumbotron text-center mt-2">
-            <div class="container">
-                {% if currentPage > 1 %}
-                <a href="/series/?page={{currentPage - 1}}" class="btn btn-outline-primary"><</a>
-                {% endif %}
-                Page : {{currentPage}}
-                {% if currentPage < maxPage %}
-                <a href="/series/?page={{currentPage + 1}}" class="btn btn-outline-primary">></a>
-                {% endif %}
-                <br><br>
-            </div>
+            {{ knp_pagination_render(series) }}
         </div>
     </section>
     
