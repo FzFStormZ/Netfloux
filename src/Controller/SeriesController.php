@@ -262,9 +262,7 @@ class SeriesController extends AbstractController
         $stream = $series->getPoster();
         $poster = stream_get_contents($stream);
 
-        $response = new Response($this->render('series/poster.html.twig', [
-            'poster' => $poster,
-        ]));
+        $response = new Response($poster);
 
         $response->headers->set('Content-type', 'image/jpeg');
 

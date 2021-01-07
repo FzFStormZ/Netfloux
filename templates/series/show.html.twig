@@ -17,7 +17,7 @@
         <div class="container">
             <div class="row">
             <div class="col-12">
-                <img src='data:image/jpeg;base64,{{ poster }}'/>
+                <img src="{{ path('series_poster', {'id': series.id}) }}"/>
                 <h1>{{ series.title }}</h1>
                 <br>
                 <p>{{ series.plot }}</p>
