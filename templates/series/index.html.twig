@@ -40,24 +40,22 @@
                 </div>
             </div> <!-- row -->
             <div class="row justify-content-center">
-            {% set i = 0 %}
-                {% for serie in series %}
+                {% for tab in tabRating %}
                     <div class="col-lg-4 col-md-7 col-sm-9">
                         <div class="single-features mt-40">
                             <div class="features-title-icon text-center ">
-                                <a href="{{ path('series_show', {'id': serie.id}) }}"><img src="data:image/jpeg;base64,{{ poster[i] }}"/></a>
+                                <img><a href="{{ path('series_poster', {'id': tab['id']}) }}"></a></img>
                                 <div class="d-flex justify-content-center">
-                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': serie.id}) }}">{{ serie.title }}</a></h4>                                        
+                                    <h4 class="features-title"><a href="{{ path('series_show', {'id': tab['id']}) }}">{{ tab["title"] }}</a></h4>                                        
                                 </div>
-                                {% for key in tabRating|keys %}
-                                    {% if key == serie.id %}
-                                        <h5 class="features-title">{{ tabRating[key] }}/10</h5>
-                                    {% endif %}
-                                {% endfor %}
+                                {% if tab["mark"] == NULL %}
+                                    <h5 class="features-title">N/A</h5>
+                                {% else %}
+                                    <h5 class="features-title">{{ tab["mark"]|round(1, 'floor') }}/10</h5>
+                                {% endif %}
                             </div>
                         </div>
                     </div>
-                    {% set i = i + 1 %}
                 {% else %}
                         <p class="text">No Record Found</p>
                 {% endfor %}

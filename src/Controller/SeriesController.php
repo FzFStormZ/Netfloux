@@ -37,7 +37,7 @@ class SeriesController extends AbstractController
         $series = $this->getDoctrine()
             ->getRepository(Series::class)
             ->findAll();
-        $tabRating = array();
+        $sort = 'DESC';
         
 
         $searchForm = $this->createForm(SearchType::class, null, ['countries' => $countries, 'genres' => $genres]);
@@ -51,18 +51,12 @@ class SeriesController extends AbstractController
             $genre = $searchForm->get('genre')->getData();
             $sort = $searchForm->get('sort')->getData();
 
-            $series = $repository->findCustom($title, $country, $genre, $sort);
+            $series = $repository->findCustom($title, $country, $genre);
+
+            
         }
 
-        
-        /*
-        foreach ($series as $serie){
-            $avg = $repository->findByAndAverage($serie);
-            
-            $tabRating[$serie->getId()] = round($avg, 1);
-            $seriesId[$serie->getId()] = $serie;
-        }*/
-
+        $avg = $repository->findAllAndAverage($sort);
         
         // A CORRIGER
         if (isset($_GET['page'])) {
@@ -94,7 +88,7 @@ class SeriesController extends AbstractController
 
         foreach($series as $serie){
             $stream = $serie->getPoster();
-            array_push($poster, base64_encode(stream_get_contents($stream)));
+            //array_push($poster[$serie->getId()], base64_encode(stream_get_contents($stream)));
         }
  
 
@@ -105,7 +99,7 @@ class SeriesController extends AbstractController
             'genres' => $genres,
             'currentPage' => $page,
             'maxPage' => $maxPage,
-            'tabRating' => $tabRating,
+            'tabRating' => $avg,
             'searchForm' => $searchForm->createView(),
         ]);
     }
@@ -241,5 +235,23 @@ class SeriesController extends AbstractController
             'trailer' => $trailer,
 
         ]);
+    }
+
+    /**
+     * @Route("/poster/{id}", name="series_poster", methods={"GET", "POST"}, requirements={"id":"\d+"})
+     */
+    public function poster(Series $series, Request $request): Response
+    {
+
+        $stream = $series->getPoster();
+        $poster = stream_get_contents($stream);
+
+        $response = new Response($this->render('series/poster.html.twig', [
+            'poster' => $poster,
+        ]));
+
+        $response->headers->set('Content-type', 'image/jpeg');
+
+        return $response;
     }
 }

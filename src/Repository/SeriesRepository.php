@@ -23,7 +23,7 @@ class SeriesRepository extends ServiceEntityRepository
      * @return Series[] Returns an array of Series objects
      */
 
-    public function findCustom($title, $country, $genre, $sort)
+    public function findCustom($title, $country, $genre)
     {
         return $this->createQueryBuilder('s')
             ->join('s.genre', 'g')
@@ -34,21 +34,21 @@ class SeriesRepository extends ServiceEntityRepository
             ->setParameter('title', $title.'%')
             ->setParameter('genre', $genre.'%')
             ->setParameter('country', $country.'%')
-            // ORDER BY RATINGS HERE !!
             ->getQuery()
             ->getResult()
         ;
     }
 
     
-    public function findAllAndAverage()
+    public function findAllAndAverage($sort)
     {
         return $this->createQueryBuilder('s')
-
-            ->orderBy('s.ratings', 'ASC')
-            ->select('avg(s.ratings)')
+            ->select('s.id, s.title, AVG(r.value) AS mark')
+            ->leftJoin('s.ratings', 'r')
+            ->groupBy('s.title')
+            ->orderBy('mark', $sort)
             ->getQuery()
-            ->getResult()
+            ->getScalarResult();
         ;
     }
 }

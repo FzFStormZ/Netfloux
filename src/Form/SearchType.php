@@ -45,7 +45,7 @@ class SearchType extends AbstractType
                 'required' => false,
                 'choices' => [
                     'Ascending' => 'ASC',
-                    'Descending' => 'DES'
+                    'Descending' => 'DESC'
                 ]
             ])
         ;
