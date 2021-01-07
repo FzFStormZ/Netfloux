@@ -11,6 +11,7 @@ use App\Form\FollowType;
 use App\Form\UnFollowType;
 use App\Form\RatingType;
 use App\Form\SearchType;
+use App\Form\CommentType;
 use App\Repository\SeriesRepository;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -218,6 +219,20 @@ class SeriesController extends AbstractController
                 }
             }
         }
+        $commentForm = $this->get('form.factory')->createNamed('form_' . (string)$rating->getId(), CommentType::class, $rating);
+        $commentForm->handleRequest($request);
+
+        if ($commentForm->isSubmitted() && $commentForm->isValid() && $user) {
+
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->remove($rating);
+            $entityManager->flush($rating);
+
+            return $this->redirectToRoute('series_show', ['id' => $series->getId()]);
+        }
+
+        $commentForm = $commentForm->createView();
+        
 
         return $this->render('series/show.html.twig', [
             'series' => $series,
@@ -233,6 +248,7 @@ class SeriesController extends AbstractController
             'rating' => $rating,
             'found' => $found,
             'trailer' => $trailer,
+            'commentForm' => $commentForm,
 
         ]);
     }

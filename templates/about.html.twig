@@ -40,142 +40,127 @@
     <br>
     <div class="jumbotron text-center" >
         <div class="container">
-            <h1>Groupe : S3A</h1>
+            <h1>Group : S3A</h1>
             <h2>CHABRIER Julien - DEGAIL Dylan</h2>
             <br>
             <table>
                 <thead class="bg-primary text-white">
                     <tr>
-                        <th width="500px">Fonctionnalité
-                        </th><th width="40px">Pas&nbsp;abordée
-                        </th><th width="40px">Pas&nbsp;terminée
-                        </th><th width="40px">Fonctionnelle
-                        </th><th width="300px">Commentaire (éventuel)
+                        <th width="500px">Features
+                        </th><th width="50px">Not&nbsp;implemented
+                        </th><th width="50px">Not&nbsp;Finished
+                        </th><th width="50px">Operational
+                        </th><th width="500px">Comment (optional)
                     </th></tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <th>Une page d'accueil présentant le site</th>
+                        <th>An home page introducing the website</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <th>Un menu facilitant la navigation dans le site</th>
+                        <th>An easy menu to navigate through the website</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <th>Une page "à propos", décrivant le travail réalisé et précisant
-                            la liste des auteurs du site (le binôme), et éventuellement les
-                            difficultés rencontrées (ainsi que ce tableau)</th>
+                        <th>An about page, descibing the done work and specifying the website's authors and eventually the difficulties encountered</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <th>Une page présentant l'ensemble des séries de la base de
-                            données, l'affichage doit être paginé et il doit être possible de
-                            rechercher des séries</th>
+                        <th>A paged page displaying the whole database serie's list. It has to be possible to search for a serie</th>
+                        <td></td>
+                        <td></td>
+                        <td>X</td>
+                        <td>Huge difficulty with the search form. Firstly done with html but has required some efforts to turn it into a symfony form (mainly with the sort).</td>
+                    </tr>
+                    <tr>
+                        <th>The possibility to navigate through serie's seasons, and then in episodes</th>
+                        <td></td>
+                        <td></td>
+                        <td>X</td>
+                        <td>We've taken the principle of the series display. Thus for each series, seasons are listed and clickable and same for the episodes, they're listed and clickable.</td>
+                    </tr>
+                    <tr>
+                        <th>Everytime it's relevant, display the serie's poster</th>
+                        <td></td>
+                        <td></td>
+                        <td>X</td>
+                        <td>We've judged relevant to display the poster in the series list page, in all the serie's pages and also in the user series list.</td>
+                    </tr>
+                    <tr>
+                        <th>Everytime it's relevant, display the<em>YouTube</em> trailer</th>
+                        <td></td>
+                        <td></td>
+                        <td>X</td>
+                        <td>We've judged relevant to display the Youtube trailer in every serie's page (iframe) and in the user series list (bouton).</td>
+                    </tr>
+                    <tr>
+                        <th>Everytime it's relevant, display the serie's or episode's <em>IMDB</em> page link</th>
+                        <td></td>
+                        <td></td>
+                        <td>X</td>
+                        <td>We've judged relevant to display the IMDB page link in every serie's and episode's page, and also in the user series list.</td>
+                    </tr>
+                    <tr>
+                        <th>The possibility for a user to sign in and login with a session tracking</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <th>La possibilité de naviguer dans les saisons d'une série, puis dans les épisodes</th>
+                        <th>Respect of the basics security mesures (password non-clearly stored, CAPTCHA in sign in...)</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
-                        <td></td>
+                        <td>Adding CPTCHA with the gregwar bundle</td>
                     </tr>
                     <tr>
-                        <th>Chaque fois que c'est pertinent on affichera le poster de la série</th>
+                        <th>Being sign and logged in only, possibility to rate a serie, and adding and optional comment (<kbd>rating</kbd> table)</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
-                        <td></td>
+                        <td>A user can post only one comment by serie (to prevent spam). We've add the possibility to delete it's own comment. There isn't an edit option (Editing is basicaly delete and rewrite its comment)</td>
                     </tr>
                     <tr>
-                        <th>Chaque fois que c'est pertinent on affichera le trailer <em>YouTube</em></th>
+                        <th>Being sign and logged in only, possibility to sort series by average rate (ascending or descending) using the users rates posted on the website</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
-                        <td></td>
+                        <td>Difficulty here to gather the serie ratings to compute the average (Firstly done with associative arrays and so much sql queries)</td>
                     </tr>
                     <tr>
-                        <th>Chaque fois que c'est pertinent on affichera un lien vers la fiche <em>IMDB</em> de la série ou de l'épisode
-                        </th>
-                        <td></td>
-                        <td></td>
-                        <td>X</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>La possibilité pour un utilisateur de s'inscrire et de se connecter avec un suivi de session</th>
-                        <td></td>
-                        <td></td>
-                        <td>X</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Respect des mesures classiques de sécurité (mot de passe non stocké en clair, CAPTCHA à
-                            l'inscription...)</th>
-                        <td></td>
-                        <td></td>
-                        <td>X</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>En étant inscrit et connecté seulement, possibilité de noter
-                            une série, en ajoutant éventuellement un commentaire optionnel (table
-                            <kbd>rating</kbd>)</th>
-                        <td></td>
-                        <td></td>
-                        <td>X</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>En étant inscrit et connecté seulement, possibilité de classer
-                            les séries par note moyenne croissante ou décroissante (en utilisant les
-                            notes postées par les utilisateurs du site)</th>
-                        <td></td>
-                        <td></td>
-                        <td>X</td>
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>En étant inscrit et connecté seulement, possibilité de
-                            "suivre" des séries (à l'aide de la table <kbd>user_series</kbd>) et ces séries
-                            sont accessibles
+                        <th>Being sign and logged in only, possibility to follow series (with the table <kbd>user_series</kbd>) and these series are accessible
                         </th><td></td>
                         <td></td>
                         <td>X</td>
-                        <td>Difficulty : To know how to recognize precisly a form between each form in "myseries" page</td>
+                        <td>Difficulty to know how to recognize accuratly a form between each form in the "my_series" page</td>
                     </tr>
                     <tr>
-                        <th>En étant inscrit et connecté seulement, possibilité de marquer
-                            un épisode comme vu ou non vu. De cette manière, l'utilisateur doit
-                            pouvoir visualiser où il en est dans le visionnage d'une série. Il est
-                            pertinent de remonter l'information dans la page "saisons"</th>
+                        <th>Being sign and logged in only, possibility to label an episode as watched or not. Like that, the user can visualize his advandcement in his serie watching. it's relevant to put this information in the season page</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
-                        <td>Difficulty : To manipulate Collection/Object[] type which are returned by getEpisodes() for example</td>
+                        <td>Difficulty to manipulate Collection/Object[] type which are returned by getEpisodes() for example</td>
                     </tr>
                     <tr>
-                        <th>Un utilisateur administrateur doit pouvoir modérer les commentaires en les supprimant</th>
+                        <th>An admin can moderate comments by deleting them</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
                         <td></td>
                     </tr>
                     <tr>
-                        <th>Un administrateur devrait pouvoir incorporer des nouvelles séries dans la base de données à l'aide de l'API <em>OMDB</em></th>
+                        <th>An admin can add new series to the database with the <em>OMDB</em> API</th>
                         <td></td>
                         <td></td>
                         <td>X</td>
