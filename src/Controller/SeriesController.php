@@ -13,7 +13,6 @@ use App\Form\RatingType;
 use App\Form\SearchType;
 use App\Form\CommentType;
 use App\Repository\SeriesRepository;
-use Doctrine\O;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,39 +67,11 @@ class SeriesController extends AbstractController
         $series = $paginator->paginate(
             $series, // Requête contenant les données à paginer (ici nos articles)
             $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
-            6 // Nombre de résultats par page
+            15 // Nombre de résultats par page
         );
-        
-        // A CORRIGER
-        if (isset($_GET['page'])) {
-            $page = (int)$_GET['page'];
-        } else {
-            $page = 1;
-        }
-
-        $lenght = 18;
-
-        if ($page < 1){
-            $page = 1;
-        } else if(($page-1)*$lenght > count($series)) {
-            $page--;
-        }
-
-        if(count($series) > ($page-1)*$lenght+$lenght){
-            $tmp = array_slice($series, (($page-1)*$lenght), $lenght);
-        } else {
-            $tmplenght = count($series) - ($page-1)*$lenght;
-            $tmp = array_slice($series, (($page-1)*$lenght), $tmplenght);
-        }
-
-        $maxPage = (int)(count($series) / $lenght)+1;
-
-        $series = $tmp;
 
         return $this->render('series/index.html.twig', [
             'series' => $series,
-            'currentPage' => $page,
-            'maxPage' => $maxPage,
             'searchForm' => $searchForm->createView(),
         ]);
     }
