@@ -13,6 +13,8 @@ use App\Form\RatingType;
 use App\Form\SearchType;
 use App\Form\CommentType;
 use App\Repository\SeriesRepository;
+use Doctrine\O;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -26,7 +28,7 @@ class SeriesController extends AbstractController
     /**
      * @Route("/", name="series_index", methods={"GET", "POST"})
      */
-    public function index(Request $request, SeriesRepository $repository): Response
+    public function index(Request $request, SeriesRepository $repository, PaginatorInterface $paginator): Response
     {
         // Variables
         $countries = $this->getDoctrine()
@@ -56,6 +58,12 @@ class SeriesController extends AbstractController
 
             
         }
+
+        $series = $paginator->paginate(
+            $series, // Requête contenant les données à paginer (ici nos articles)
+            $request->query->getInt('page', 1), // Numéro de la page en cours, passé dans l'URL, 1 si aucune page
+            6 // Nombre de résultats par page
+        );
 
         $avg = $repository->findAllAndAverage($sort);
         
