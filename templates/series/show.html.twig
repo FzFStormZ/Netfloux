@@ -37,9 +37,9 @@
                 {% else %}
                     <h3 class="mt-0 mb-1">Note : {{ rating.value }}/10</h3>
                     <p>Your comment : {{ rating.comment }}</p>
-                    {{ form_start(commentsForm[rating.id]) }}
+                    {{ form_start(commentForm) }}
                         <button type="submit" class="btn btn-outline-secondary">Delete</button>
-                    {{ form_end(commentsForm[rating.id]) }}
+                    {{ form_end(commentForm)}}
                 {% endif %}
                 <br>
                 {% if follow == false %}
