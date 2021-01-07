@@ -52,13 +52,17 @@ class SeriesController extends AbstractController
             $genre = $searchForm->get('genre')->getData();
             $sort = $searchForm->get('sort')->getData();
 
-            $series = $repository->findCustom($title, $country, $genre);
-
+            $series = $repository->findCustom($title, $country, $genre, $sort);
             
+        } else {
+            $title = "";
+            $country = "";
+            $genre = "";
+            $sort = "";
+
+            $series = $repository->findCustom($title, $country, $genre, $sort);
         }
 
-        $avg = $repository->findAllAndAverage($sort);
-        
         // A CORRIGER
         if (isset($_GET['page'])) {
             $page = (int)$_GET['page'];
@@ -85,22 +89,10 @@ class SeriesController extends AbstractController
 
         $series = $tmp;
 
-        $poster = array();
-
-        foreach($series as $serie){
-            $stream = $serie->getPoster();
-            //array_push($poster[$serie->getId()], base64_encode(stream_get_contents($stream)));
-        }
- 
-
         return $this->render('series/index.html.twig', [
             'series' => $series,
-            'poster' => $poster,
-            'countries' => $countries,
-            'genres' => $genres,
             'currentPage' => $page,
             'maxPage' => $maxPage,
-            'tabRating' => $avg,
             'searchForm' => $searchForm->createView(),
         ]);
     }
