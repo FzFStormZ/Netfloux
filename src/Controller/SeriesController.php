@@ -53,6 +53,16 @@ class SeriesController extends AbstractController
 
             $series = $repository->findCustom($title, $country, $genre, $sort);
         }
+
+        
+        /*
+        foreach ($series as $serie){
+            $avg = $repository->findByAndAverage($serie);
+            
+            $tabRating[$serie->getId()] = round($avg, 1);
+            $seriesId[$serie->getId()] = $serie;
+        }*/
+
         
         // A CORRIGER
         if (isset($_GET['page'])) {

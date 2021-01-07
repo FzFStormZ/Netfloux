@@ -39,4 +39,16 @@ class SeriesRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
+
+    
+    public function findAllAndAverage()
+    {
+        return $this->createQueryBuilder('s')
+
+            ->orderBy('s.ratings', 'ASC')
+            ->select('avg(s.ratings)')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 }
