@@ -83,7 +83,7 @@ class AdminController extends AbstractController
     public function series_add(Request $request): Response
     {
         $admin = $this->getUser();
-
+        $exist = false;
         $newSerie = new Series();
         $imdbForm = $this->createForm(ImdbType::class, $newSerie);
         $imdbForm->handleRequest($request);
@@ -93,155 +93,167 @@ class AdminController extends AbstractController
             // To get imdbId that the admin give us
             $id = $imdbForm->get("imdb")->getData();
 
-            // Get all data about the serie
-            $url = "http://www.omdbapi.com/?apikey=48e8fab3&i=" . $id;
-            $data = file_get_contents($url);
+            $exist = $this->getDoctrine()
+            ->getRepository(Series::class)
+            ->findOneBy(['imdb'=>$id]);
 
-            // If the ID is correct
-            if ($data != false)
-            {
-                $serie = json_decode($data, true);
+            if ($exist == null){
+                // Get all data about the serie
+                $url = "http://www.omdbapi.com/?apikey=48e8fab3&i=" . $id;
+                $data = file_get_contents($url);
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $newSerie->setTitle($serie["Title"]);
-                $newSerie->setPlot($serie["Plot"]);
-                $newSerie->setImdb($id);
-                $newSerie->setPoster(file_get_contents($serie["Poster"]));
-                $newSerie->setDirector($serie["Director"]);
-                $newSerie->setAwards($serie["Awards"]);
-
-
-                // To handle YouTubeTrailer
-                $urlYT = "https://www.youtube.com/results?search_query=trailer+" . str_replace(" ", "+", $serie["Title"]);
-
-                $content = file_get_contents($urlYT);
-                $dom = new DOMDocument();
-                @$dom->loadhtml($content);
-                $xpath = new DOMXPath($dom);
-                $hrefs = $xpath->evaluate("/html/body/ytd-app/div/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a");
-                $href = $hrefs->item(0)->getAttribute('href');
-                $a = filter_var($href, FILTER_SANITIZE_URL);
-                $newSerie->setYoutubeTrailer("https://www.youtube.com" . $a);
-
-                // To handle YearStar and YearEnd
-                $years = explode("–", $serie["Year"]); // BIG DIFFICULTY "–" VS "-"
-                $newSerie->setYearStart((int)$years[0]);
-                $newSerie->setYearEnd(count($years) > 1 ? ((int)$years[1] != 0 ? (int)$years[1] : null) : null);
-
-                // To handle a multiple actors
-                $actors = explode(", ", $serie["Actors"]);
-                foreach ($actors as $name)
+                // If the ID is correct
+                if ($data != false)
                 {
-                    // Check if the actor already exists in the database
-                    $actor = $this->getDoctrine()
-                        ->getRepository(Actor::class)
-                        ->findOneBy(['name' => $name]);
+                    $serie = json_decode($data, true);
 
-                    if ($actor == null)
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $newSerie->setTitle($serie["Title"]);
+                    $newSerie->setPlot($serie["Plot"]);
+                    $newSerie->setImdb($id);
+                    $newSerie->setPoster(file_get_contents($serie["Poster"]));
+                    $newSerie->setDirector($serie["Director"]);
+                    $newSerie->setAwards($serie["Awards"]);
+
+                     // To handle YouTubeTrailer
+                    $urlYT = "https://www.youtube.com/results?search_query=trailer+" . str_replace(" ", "+", $serie["Title"]);
+
+                    $content = file_get_contents($urlYT);
+                    $dom = new DOMDocument();
+                    @$dom->loadhtml($content);
+                    $xpath = new DOMXPath($dom);
+                    $hrefs = $xpath->evaluate("/html/body/ytd-app/div/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a");
+                    $href = $hrefs->item(0)->getAttribute('href');
+                    $a = filter_var($href, FILTER_SANITIZE_URL);
+                    $newSerie->setYoutubeTrailer("https://www.youtube.com" . $a);
+
+                    // To handle YearStar and YearEnd
+                    $years = explode("–", $serie["Year"]); // BIG DIFFICULTY "–" VS "-"
+                    $newSerie->setYearStart((int)$years[0]);
+                    $newSerie->setYearEnd(count($years) > 1 ? ((int)$years[1] != 0 ? (int)$years[1] : null) : null);
+
+                    // To handle a multiple actors
+                    $actors = explode(", ", $serie["Actors"]);
+                    foreach ($actors as $name)
                     {
-                        $actor = new Actor();
-                        $actor->setName($name);
-                        $newSerie->addActor($actor);
-                    } else 
-                    {
-                        $newSerie->addActor($actor);
-                    }
-                
-                    $entityManager->persist($actor);
-                }
+                        // Check if the actor already exists in the database
+                        $actor = $this->getDoctrine()
+                            ->getRepository(Actor::class)
+                            ->findOneBy(['name' => $name]);
 
-                // To handle multiple countries
-                $countries = explode(", ", $serie["Country"]);
-                foreach ($countries as $name)
-                {
-                    // Check if the country already exists in the database
-                    $country = $this->getDoctrine()
-                        ->getRepository(Country::class)
-                        ->findOneBy(['name' => $name]);
-
-                    if ($country == null)
-                    {
-                        $country = new Country();
-                        $country->setName($name);
-                        $newSerie->addCountry($country);
-                    } else 
-                    {
-                        $newSerie->addCountry($country);
-                    }
-                    
-                    $entityManager->persist($country);
-                }
-
-                // To handle multiple genres
-                $genres = explode(", ", $serie["Genre"]);
-                foreach ($genres as $name)
-                {
-                    // Check if the genre already exists in the database
-                    $genre = $this->getDoctrine()
-                        ->getRepository(Genre::class)
-                        ->findOneBy(['name' => $name]);
-                    
-                    if ($genre == null)
-                    {
-                        $genre = new Genre();
-                        $genre->setName($name);
-                        $newSerie->addGenre($genre);
-                    } else {
-                        $newSerie->addGenre($genre);
-                    }
-
-                    $entityManager->persist($genre);
-                }
-
-                // To handle seasons and for each season, all episodes of it
-                $nbSeasons = $serie['totalSeasons'];
-                for ($i = 1; $i <= $nbSeasons; $i++)
-                {
-                    $season = new Season();
-                    $season->setNumber($i);
-                    $season->setSeries($newSerie);
-
-                    $dataEpisodes = file_get_contents($url . "&Season=" . $i);
-                    if ($dataEpisodes != false)
-                    {
-                        $episodes = json_decode($dataEpisodes, true);
-                        $onlyEpisodes = $episodes["Episodes"];
-                        if (count($onlyEpisodes) != 0)
+                        if ($actor == null)
                         {
-                            foreach ($onlyEpisodes as $ep)
-                            {
-                                $episode = new Episode();
-                                $episode->setTitle($ep["Title"]);
-                                $episode->setDate($ep["Released"] != "N/A" ? new DateTime($ep["Released"]) : null); // String to DateTime format
-                                $episode->setImdb($ep["imdbID"]);
-                                $episode->setImdbrating($ep["imdbRating"] != "N/A" ? $ep["imdbRating"] : null);
-                                $episode->setNumber($ep["Episode"]);
-                                $episode->setSeason($season);
-
-                                $entityManager->persist($episode);
-                            }
+                            $actor = new Actor();
+                            $actor->setName($name);
+                            $newSerie->addActor($actor);
                         } else 
                         {
-                            $episode = new Episode();
-                            $entityManager->persist($episode);
+                            $newSerie->addActor($actor);
                         }
-                            
+                    
+                        $entityManager->persist($actor);
                     }
 
-                    $entityManager->persist($season);
+                    // To handle multiple countries
+                    $countries = explode(", ", $serie["Country"]);
+                    foreach ($countries as $name)
+                    {
+                        // Check if the country already exists in the database
+                        $country = $this->getDoctrine()
+                            ->getRepository(Country::class)
+                            ->findOneBy(['name' => $name]);
+
+                        if ($country == null)
+                        {
+                            $country = new Country();
+                            $country->setName($name);
+                            $newSerie->addCountry($country);
+                        } else 
+                        {
+                            $newSerie->addCountry($country);
+                        }
+                        
+                        $entityManager->persist($country);
+                    }
+
+                    // To handle multiple genres
+                    $genres = explode(", ", $serie["Genre"]);
+                    foreach ($genres as $name)
+                    {
+                        // Check if the genre already exists in the database
+                        $genre = $this->getDoctrine()
+                            ->getRepository(Genre::class)
+                            ->findOneBy(['name' => $name]);
+                        
+                        if ($genre == null)
+                        {
+                            $genre = new Genre();
+                            $genre->setName($name);
+                            $newSerie->addGenre($genre);
+                        } else {
+                            $newSerie->addGenre($genre);
+                        }
+
+                        $entityManager->persist($genre);
+                    }
+
+                    // To handle seasons and for each season, all episodes of it
+                    $nbSeasons = $serie['totalSeasons'];
+                    for ($i = 1; $i <= $nbSeasons; $i++)
+                    {
+                        $season = new Season();
+                        $season->setNumber($i);
+                        $season->setSeries($newSerie);
+
+                        $dataEpisodes = file_get_contents($url . "&Season=" . $i);
+                        if ($dataEpisodes != false)
+                        {
+                            $episodes = json_decode($dataEpisodes, true);
+                            $onlyEpisodes = $episodes["Episodes"];
+                            if (count($onlyEpisodes) != 0)
+                            {
+                                foreach ($onlyEpisodes as $ep)
+                                {
+                                    $episode = new Episode();
+                                    $episode->setTitle($ep["Title"]);
+                                    $episode->setDate($ep["Released"] != "N/A" ? new DateTime($ep["Released"]) : null); // String to DateTime format
+                                    $episode->setImdb($ep["imdbID"]);
+                                    $episode->setImdbrating($ep["imdbRating"] != "N/A" ? $ep["imdbRating"] : null);
+                                    $episode->setNumber($ep["Episode"]);
+                                    $episode->setSeason($season);
+
+                                    $entityManager->persist($episode);
+                                }
+                            } else 
+                            {
+                                $episode = new Episode();
+                                $entityManager->persist($episode);
+                            }
+                                
+                        }
+
+                        $entityManager->persist($season);
+                    }
+
+                    $entityManager->persist($newSerie);
+                    $entityManager->flush();
+
+                    return $this->redirectToRoute('series_show', ["id" => $newSerie->getId()]);
                 }
-
-                $entityManager->persist($newSerie);
-                $entityManager->flush();
-
-                return $this->redirectToRoute('series_show', ["id" => $newSerie->getId()]);
+                $exist = false;
+            } else {
+                $exist = true;
             }
+
+
+            
                 
         }
 
         return $this->render('admin/new.html.twig', [
             'imdbForm' => $imdbForm->createView(),
             'admin' => $admin,
+            'exist' => $exist,
         ]);
     }
 }

@@ -16,6 +16,11 @@
             <h1>Add new serie</h1>
 
             {{ include('admin/_add_form.html.twig') }}
+            {% if exist == true %}
+                <script>
+                    alert("The serie is already in the base !");
+                </script>
+            {% endif %}
 
         </div>
         <br>
