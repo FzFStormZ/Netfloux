@@ -16,9 +16,11 @@
     <div class="jumbotron text-center mt-2">
         <div class="container">
             
-            {{ include('series/_search_form.html.twig') }}
-
-            {{ knp_pagination_render(series) }}
+            {{ include('series/_search_form.html.twig') }}          
+        </div>
+        <br>
+        <div class="d-flex justify-content-center">
+        {{ knp_pagination_render(series, 'pagination.html.twig') }}
         </div>
     </div>
 
@@ -53,8 +55,8 @@
                 {% endfor %}
             </div>
         </div>
-        <div class="jumbotron text-center mt-2">
-            {{ knp_pagination_render(series) }}
+        <div class="jumbotron d-flex justify-content-center">
+            {{ knp_pagination_render(series, 'pagination.html.twig') }}
         </div>
     </section>
     
