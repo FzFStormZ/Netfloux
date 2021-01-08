@@ -3,6 +3,8 @@
 namespace App\Controller;
 
 use DateTime;
+use DOMXPath;
+use DOMDocument;
 use App\Entity\Actor;
 use App\Entity\Genre;
 use App\Entity\Rating;
@@ -107,6 +109,19 @@ class AdminController extends AbstractController
                 $newSerie->setPoster(file_get_contents($serie["Poster"]));
                 $newSerie->setDirector($serie["Director"]);
                 $newSerie->setAwards($serie["Awards"]);
+
+
+                // To handle YouTubeTrailer
+                $urlYT = "https://www.youtube.com/results?search_query=trailer+" . str_replace(" ", "+", $serie["Title"]);
+
+                $content = file_get_contents($urlYT);
+                $dom = new DOMDocument();
+                @$dom->loadhtml($content);
+                $xpath = new DOMXPath($dom);
+                $hrefs = $xpath->evaluate("/html/body/ytd-app/div/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a");
+                $href = $hrefs->item(0)->getAttribute('href');
+                $a = filter_var($href, FILTER_SANITIZE_URL);
+                $newSerie->setYoutubeTrailer("https://www.youtube.com" . $a);
 
                 // To handle YearStar and YearEnd
                 $years = explode("–", $serie["Year"]); // BIG DIFFICULTY "–" VS "-"
