@@ -48,6 +48,7 @@ class SearchType extends AbstractType
                     'Descending' => 'DESC'
                 ]
             ])
+            ->setMethod("GET")
         ;
     }
 

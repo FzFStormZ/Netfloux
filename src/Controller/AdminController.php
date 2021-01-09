@@ -3,8 +3,6 @@
 namespace App\Controller;
 
 use DateTime;
-use DOMXPath;
-use DOMDocument;
 use App\Entity\Actor;
 use App\Entity\Genre;
 use App\Entity\Rating;
@@ -115,17 +113,24 @@ class AdminController extends AbstractController
                     $newSerie->setDirector($serie["Director"]);
                     $newSerie->setAwards($serie["Awards"]);
 
-                     // To handle YouTubeTrailer
-                    $urlYT = "https://www.youtube.com/results?search_query=trailer+" . str_replace(" ", "+", $serie["Title"]);
+                    // To handle YouTubeTrailer
+                    $apikey = 'AIzaSyDLLoG7jzja108UYpLC0CXe2d7hqrOluNY'; 
+                    $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=trailer+' . str_replace(" ", "+", $serie["Title"]) . '&maxResults=1&key=' . $apikey;
 
-                    $content = file_get_contents($urlYT);
-                    $dom = new DOMDocument();
-                    @$dom->loadhtml($content);
-                    $xpath = new DOMXPath($dom);
-                    $hrefs = $xpath->evaluate("/html/body/ytd-app/div/ytd-page-manager/ytd-search/div[1]/ytd-two-column-search-results-renderer/div/ytd-section-list-renderer/div[2]/ytd-item-section-renderer/div[3]/ytd-video-renderer[1]/div[1]/ytd-thumbnail/a");
-                    $href = $hrefs->item(0)->getAttribute('href');
-                    $a = filter_var($href, FILTER_SANITIZE_URL);
-                    $newSerie->setYoutubeTrailer("https://www.youtube.com" . $a);
+                    $ch = curl_init();
+
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    $response = curl_exec($ch);
+
+                    curl_close($ch);
+                    $data = json_decode($response);
+                    $value = json_decode(json_encode($data), true);
+
+                    $videoId = $value['items'][0]['id']['videoId'];
+
+                    $newSerie->setYoutubeTrailer("https://www.youtube.com/watch?v=" . $videoId);
 
                     // To handle YearStar and YearEnd
                     $years = explode("–", $serie["Year"]); // BIG DIFFICULTY "–" VS "-"
