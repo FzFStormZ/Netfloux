@@ -12,6 +12,7 @@ use App\Form\UnFollowType;
 use App\Form\RatingType;
 use App\Form\SearchType;
 use App\Form\CommentType;
+use Gregwar\Cache\Cache;
 use App\Repository\SeriesRepository;
 use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -92,10 +93,6 @@ class SeriesController extends AbstractController
     public function show(Series $series, Request $request): Response
     {
         $user = $this->getUser(); // Connected user
-
-        // To get the poster
-        $stream = $series->getPoster();
-        $poster = base64_encode(stream_get_contents($stream));
 
         // To get seasons
         $seasons = $series->getSeasons();
@@ -217,7 +214,6 @@ class SeriesController extends AbstractController
 
         return $this->render('series/show.html.twig', [
             'series' => $series,
-            'poster' => $poster,
             'seasons' => $seasons,
             'genres' => $genres,
             'countries' => $countries,
@@ -237,15 +233,48 @@ class SeriesController extends AbstractController
     /**
      * @Route("/poster/{id}", name="series_poster", methods={"GET", "POST"}, requirements={"id":"\d+"})
      */
-    public function poster(Series $series, Request $request): Response
+    public function poster(Series $series): Response
     {
+        
+        $id = $series->getId();
 
-        $stream = $series->getPoster();
-        $poster = stream_get_contents($stream);
+        $cache = new Cache;
+        $cache->setCacheDirectory('cache'); // This is the default
+        $cache->setPrefixSize(0);
 
-        $response = new Response($poster);
+        // If the cache exists, this will return it, else, the closure will be called
+        // to create this image
+        $i = null;
+
+        if (!$cache->exists("$id.txt", array())){
+            $i = stream_get_contents($series->getPoster());
+            $cache->set("$id.txt", $i);
+        }
+        $i = $cache->get("$id.txt", array());
+
+
+        /*$data = $cache->getOrCreate($series->getPoster(), array(), function($filename) {
+            $i = explode(".", $filename)[0];
+            $image = imagecreatefromstring(stream_get_contents($i));
+            imagejpeg($image, $filename);
+            //$poster = stream_get_contents($stream);
+        });*/
+
+
+        /*$data = $cache->getOrCreate('red-square.jpeg', array(), function($filename) {
+            $i = imagecreatetruecolor(100, 100);
+            imagefill($i, 0, 0, 0xff0000);
+            imagejpeg($i, $filename);
+        });*/
+        
+        $response = new Response($i);
 
         $response->headers->set('Content-type', 'image/jpeg');
+
+
+        /*$response = new Response($poster);
+
+        $response->headers->set('Content-type', 'image/jpeg');*/
 
         return $response;
     }
