@@ -113,6 +113,25 @@ class AdminController extends AbstractController
                     $newSerie->setDirector($serie["Director"]);
                     $newSerie->setAwards($serie["Awards"]);
 
+                    // To handle YouTubeTrailer
+                    $apikey = 'AIzaSyDLLoG7jzja108UYpLC0CXe2d7hqrOluNY'; 
+                    $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=trailer+' . str_replace(" ", "+", $serie["Title"]) . '&maxResults=1&key=' . $apikey;
+
+                    $ch = curl_init();
+
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_URL, $googleApiUrl);
+                    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+                    $response = curl_exec($ch);
+
+                    curl_close($ch);
+                    $data = json_decode($response);
+                    $value = json_decode(json_encode($data), true);
+
+                    $videoId = $value['items'][0]['id']['videoId'];
+
+                    $newSerie->setYoutubeTrailer("https://www.youtube.com/watch?v=" . $videoId);
+
                     // To handle YearStar and YearEnd
                     $years = explode("–", $serie["Year"]); // BIG DIFFICULTY "–" VS "-"
                     $newSerie->setYearStart((int)$years[0]);
