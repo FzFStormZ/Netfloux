@@ -3,6 +3,7 @@
 namespace App\Form;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\ChoiceList\ChoiceList;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -36,6 +37,8 @@ class SearchType extends AbstractType
             ])
             ->add('genre', ChoiceType::class, [
                 'mapped' => false,
+                'multiple' => true,
+                'expanded' => true,
                 'required' => false,
                 'choices' => $genres,
             ])
@@ -48,6 +51,7 @@ class SearchType extends AbstractType
                     'Descending' => 'DESC'
                 ]
             ])
+            ->setMethod('GET')
         ;
     }
 

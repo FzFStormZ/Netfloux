@@ -18,6 +18,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Validator\Constraints\Length;
 
 /**
  * @Route("/series")
@@ -53,12 +54,21 @@ class SeriesController extends AbstractController
             $genre = $searchForm->get('genre')->getData();
             $sort = $searchForm->get('sort')->getData();
 
+            if (count($genre) == 0){
+                foreach ($genres as $g){
+                    array_push($genre, $g->getName());
+                }
+                
+            }
             $series = $repository->findCustom($title, $country, $genre, $sort);
             
         } else {
             $title = "";
             $country = "";
-            $genre = "";
+            $genre = array();
+            foreach ($genres as $g){
+                array_push($genre, $g->getName());
+            }
             $sort = "";
 
             $series = $repository->findCustom($title, $country, $genre, $sort);
