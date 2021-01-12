@@ -78,6 +78,9 @@
     "egulias/email-validator": {
         "version": "2.1.24"
     },
+    "gregwar/cache": {
+        "version": "v1.0.12"
+    },
     "gregwar/captcha": {
         "version": "v1.1.8"
     },
