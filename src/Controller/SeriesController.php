@@ -253,7 +253,6 @@ class SeriesController extends AbstractController
         $i = $cache->get("$id.jpeg", array());
         
         $response = new Response($i);
-
         $response->headers->set('Content-type', 'image/jpeg');
 
         return $response;
