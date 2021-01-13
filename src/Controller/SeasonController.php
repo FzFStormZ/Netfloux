@@ -4,7 +4,6 @@ namespace App\Controller;
 
 use App\Entity\Season;
 use App\Entity\Series;
-use App\Entity\Episode;
 use App\Form\WatchedType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -75,8 +74,10 @@ class SeasonController extends AbstractController
 
     // Used to episodes watched/not watched
     function array_remove($element, $array) {
+
         $index = array_search($element, $array);
         array_splice($array, $index, 1);
+        
         return $array;
-      }
+    }
 }

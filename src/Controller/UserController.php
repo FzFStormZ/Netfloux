@@ -17,7 +17,7 @@ class UserController extends AbstractController
      */
     public function myseries(Request $request): Response
     {
-        // To get user' series
+        // To get user series
         $user = $this->getUser();
         $series = $user->getSeries(); // $series[] --> user can be more than 1 follow serie
 
@@ -28,7 +28,7 @@ class UserController extends AbstractController
             // To print UnFollowForm for each serie
             foreach($series as $serie)
             {
-                $form = $this->get('form.factory')->createNamed('form_' . (string)$serie->getId(), UnFollowType::class, $user); // A FIX PROBLEM TO PUT IN "ABOUT PAGE". We have to give a name for each form to identified each form !!
+                $form = $this->get('form.factory')->createNamed('form_' . (string)$serie->getId(), UnFollowType::class, $user); // We have to give a name for each form to identified each form !!
                 $form->handleRequest($request);
 
                 if ($form->isSubmitted() && $form->isValid() && $user) 

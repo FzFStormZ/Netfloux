@@ -246,14 +246,12 @@ class AdminController extends AbstractController
 
                     return $this->redirectToRoute('series_show', ["id" => $newSerie->getId()]);
                 }
+                
                 $exist = false;
+
             } else {
                 $exist = true;
             }
-
-
-            
-                
         }
 
         return $this->render('admin/new.html.twig', [
