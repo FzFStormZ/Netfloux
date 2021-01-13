@@ -251,15 +251,9 @@ class SeriesController extends AbstractController
             $cache->set("$id.txt", $i);
         }
         $i = $cache->get("$id.txt", array());
-
+   
         $response = new Response($i);
-
         $response->headers->set('Content-type', 'image/jpeg');
-
-
-        /*$response = new Response($poster);
-
-        $response->headers->set('Content-type', 'image/jpeg');*/
 
         return $response;
     }
