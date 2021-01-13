@@ -246,35 +246,15 @@ class SeriesController extends AbstractController
         // to create this image
         $i = null;
 
-        if (!$cache->exists("$id.txt", array())){
+        if (!$cache->exists("$id.jpeg", array())){
             $i = stream_get_contents($series->getPoster());
-            $cache->set("$id.txt", $i);
+            $cache->set("$id.jpeg", $i);
         }
-        $i = $cache->get("$id.txt", array());
-
-
-        /*$data = $cache->getOrCreate($series->getPoster(), array(), function($filename) {
-            $i = explode(".", $filename)[0];
-            $image = imagecreatefromstring(stream_get_contents($i));
-            imagejpeg($image, $filename);
-            //$poster = stream_get_contents($stream);
-        });*/
-
-
-        /*$data = $cache->getOrCreate('red-square.jpeg', array(), function($filename) {
-            $i = imagecreatetruecolor(100, 100);
-            imagefill($i, 0, 0, 0xff0000);
-            imagejpeg($i, $filename);
-        });*/
+        $i = $cache->get("$id.jpeg", array());
         
         $response = new Response($i);
 
         $response->headers->set('Content-type', 'image/jpeg');
-
-
-        /*$response = new Response($poster);
-
-        $response->headers->set('Content-type', 'image/jpeg');*/
 
         return $response;
     }
