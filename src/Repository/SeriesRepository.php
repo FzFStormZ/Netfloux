@@ -35,7 +35,6 @@ class SeriesRepository extends ServiceEntityRepository
             ->andWhere('c.name LIKE :country')
             ->setParameter('title', $title.'%')
             ->setParameter('genre', $genre, \Doctrine\DBAL\Connection::PARAM_STR_ARRAY)
-            //->setParameter('genre', $genre.'%')
             ->setParameter('country', $country.'%')
             ->groupBy('s.title')
             ->orderBy('mark', $sort)

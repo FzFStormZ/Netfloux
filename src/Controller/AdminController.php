@@ -97,7 +97,8 @@ class AdminController extends AbstractController
 
             if ($exist == null){
                 // Get all data about the serie
-                $url = "http://www.omdbapi.com/?apikey=48e8fab3&i=" . $id;
+                $apikey = $this->getParameter('app.api_key_omdb');
+                $url = "http://www.omdbapi.com/?apikey=" . $apikey . "&i=" . $id;
                 $data = file_get_contents($url);
 
                 // If the ID is correct
@@ -114,7 +115,7 @@ class AdminController extends AbstractController
                     $newSerie->setAwards($serie["Awards"]);
 
                     // To handle YouTubeTrailer
-                    $apikey = 'AIzaSyDLLoG7jzja108UYpLC0CXe2d7hqrOluNY'; 
+                    $apikey = $this->getParameter('app.api_key_google'); 
                     $googleApiUrl = 'https://www.googleapis.com/youtube/v3/search?part=snippet&q=trailer+' . str_replace(" ", "+", $serie["Title"]) . '&maxResults=1&key=' . $apikey;
 
                     $ch = curl_init();

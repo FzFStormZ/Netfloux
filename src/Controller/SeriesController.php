@@ -246,12 +246,12 @@ class SeriesController extends AbstractController
         // to create this image
         $i = null;
 
-        if (!$cache->exists("$id.txt", array())){
+        if (!$cache->exists("$id.jpeg", array())){
             $i = stream_get_contents($series->getPoster());
-            $cache->set("$id.txt", $i);
+            $cache->set("$id.jpeg", $i);
         }
-        $i = $cache->get("$id.txt", array());
-   
+        $i = $cache->get("$id.jpeg", array());
+        
         $response = new Response($i);
         $response->headers->set('Content-type', 'image/jpeg');
 
